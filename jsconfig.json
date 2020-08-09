@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "paths": {
+      "@app/*": ["src/*"],
+      "@locale/*": ["locale/*"]
+    },
+    "baseUrl": "./"
+  }
+}
