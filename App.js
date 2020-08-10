@@ -8,10 +8,20 @@
 
 import React from 'react';
 import 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import SplashScreen from '@app/pages/splash';
 import AppContainer from '@app/pages/mainNavigator';
+import { Colors } from '@app/helper';
 
+const Theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    card: Colors.main,
+    text: Colors.white,
+    background: Colors.background,
+  },
+};
 class App extends React.Component {
   constructor() {
     super();
@@ -23,7 +33,7 @@ class App extends React.Component {
   componentDidMount() {
     setTimeout(() => {
       this.setState({ loading: false });
-    }, 1000);
+    }, 100);
   }
 
   render() {
@@ -32,7 +42,7 @@ class App extends React.Component {
       return <SplashScreen />;
     } else {
       return (
-        <NavigationContainer>
+        <NavigationContainer theme={Theme}>
           <AppContainer />
         </NavigationContainer>
       );

@@ -1,0 +1,15 @@
+export const MONTH_NAMES = {
+  Tehuti: require('./Tehuti.png'),
+  Penipt: require('./Penipt.png'),
+  Ateeri: require('./Ateeri.png'),
+  Kairika: require('./Kairika.png'),
+  Tepia: require('./Tepia.png'),
+  "M'Khir": require("./M'Khir.png"),
+  'Pen Imenhotep': require('./PenImenhotep.png'),
+  'Pen Renut': require('./PenRenut.png'),
+  Kpekhan: require('./Kpekhan.png'),
+  Peninit: require('./Peninit.png'),
+  'Heb Senseni': require('./HebSenseni.png'),
+  'Mesut Re': require('./MesutRe.png'),
+  Nwt: require('./Nwt.png'),
+};
