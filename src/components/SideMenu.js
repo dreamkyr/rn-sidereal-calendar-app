@@ -10,14 +10,14 @@ export const SideMenu = ({ navigation }) => (
         <View style={styles.logoContainer}>
           <Image resizeMode="contain" style={styles.logo} source={require('@app/assets/images/logo.png')} />
         </View>
-        <TouchableOpacity style={styles.viewContainer} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.viewContainer} onPress={() => navigation.navigate('Main')}>
           <Text style={styles.titleText}>View</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Week')}>
           <Image source={require('@app/assets/images/sidemenu_weekly.png')} />
           <Text style={styles.menuText}>Dekan (Weekly)</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Main')}>
           <Image source={require('@app/assets/images/sidemenu_monthly.png')} />
           <Text style={styles.menuText}>Medu (Monthly)</Text>
         </TouchableOpacity>

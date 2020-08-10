@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image } from 'react-native';
 import { Colors } from '@app/helper';
-import { getSMonthList } from '@app/helper/data';
+import { getSMonthList, SMONTH_DATA } from '@app/helper/data';
 import { FlatList } from 'react-native-gesture-handler';
 import { MONTH_NAMES } from '@app/assets/images/monthNames';
 
@@ -28,15 +28,19 @@ export default class HomeScreen extends React.Component {
     }
   };
 
+  gotoWeeklyView = (item) => {
+    this.props.navigation.navigate('Week', { selectedMonth: item });
+  };
+
   renderItem = (item) => (
-    <TouchableOpacity style={styles.itemContainer}>
+    <TouchableOpacity style={styles.itemContainer} onPress={() => this.gotoWeeklyView(item)}>
       <View style={styles.monthContainer}>
         <Text style={styles.monthText}>{item.s_month}</Text>
         <Image style={styles.monthImage} resizeMode="contain" source={MONTH_NAMES[item.s_month]} />
       </View>
       <View>
         <Text style={styles.dateText}>
-          ({item.s_month}) - {item.from_month} {item.from_day} - {item.to_month} {item.to_day}, {item.year}
+          ({SMONTH_DATA[item.s_month].nickname}) - {item.from_month} {item.from_day} - {item.to_month} {item.to_day}, {item.year}
         </Text>
       </View>
     </TouchableOpacity>
@@ -81,7 +85,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 12,
     borderBottomColor: Colors.black,
-    borderBottomWidth: 2,
+    borderBottomWidth: 3,
   },
   monthContainer: {
     flexDirection: 'row',
@@ -90,6 +94,7 @@ const styles = StyleSheet.create({
   },
   monthText: {
     paddingLeft: 10,
+    color: Colors.green,
     fontSize: 30,
     fontWeight: 'bold',
     width: '60%',
@@ -103,5 +108,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textTransform: 'uppercase',
     fontWeight: '300',
+    paddingLeft: 10,
   },
 });
