@@ -3,7 +3,7 @@ export const Colors = {
   background: '#FEF6D6',
   white: '#FFFFFF',
   black: '#000000',
-  green: '#6C7756',
+  green: '#92A16E',
   gray: 'gray',
-  lightpink: '#7E2B2EAA',
+  lightpink: '#7E2B2E3A',
 };

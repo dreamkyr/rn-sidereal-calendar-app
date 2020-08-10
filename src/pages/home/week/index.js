@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image, ScrollView } from 'react-native';
+import { SidemenuAdd } from '@app/components';
 import { Colors } from '@app/helper';
 import { getSMonthList, getMonthByName, SMONTH_DATA, getSDayObject } from '@app/helper/data';
 import { MONTH_NAMES } from '@app/assets/images/monthNames';
@@ -21,7 +22,10 @@ export default class WeekScreen extends React.Component {
     const { setOptions } = this.props.navigation;
     const { params } = this.props.route;
     const item = (params && params.selectedMonth) || monthList[0];
-    setOptions({ title: `${item.s_month} - ${item.s_year}` });
+    setOptions({
+      title: `${item.s_month} - ${item.s_year}`,
+      headerRight: () => <SidemenuAdd onPress={this.addEvent} />,
+    });
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ monthData: getMonthByName(item.s_month, item.s_year), currentMonth: item });
   }
@@ -29,6 +33,10 @@ export default class WeekScreen extends React.Component {
   goToDetail = () => {
     this.props.navigation.navigate('Detail', { selectedMonth: this.state.currentMonth });
   };
+
+  addEvent = () => {
+
+  }
 
   render() {
     const { monthData, selectedDay, currentMonth } = this.state;
@@ -77,7 +85,7 @@ export default class WeekScreen extends React.Component {
           </View>
           {selectedDay && (
             <View style={styles.agendaContainer}>
-              <Text style={styles.dateText}>Dekan Details</Text>
+              <Text style={styles.detailText}>Dekan Details</Text>
               <View style={styles.detailContainer}>
                 <View style={styles.detailImageContainer}>
                   <Image resizeMode="contain" style={styles.detailImage} source={DAY_IMAGES[(selectedDay - 1) % 10]} />
@@ -92,7 +100,7 @@ export default class WeekScreen extends React.Component {
             </View>
           )}
           <View style={styles.agendaContainer}>
-            <Text style={styles.dateText}>Today's Agenda</Text>
+            <Text style={styles.detailText}>Today's Agenda</Text>
             <View style={styles.detailContainer}>
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailTitleText}>Holiday Title</Text>
@@ -142,6 +150,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textTransform: 'uppercase',
   },
+  detailText: {
+    fontSize: 16,
+  },
   calendarContainer: {
     paddingTop: 20,
     marginHorizontal: 5,
@@ -156,7 +167,7 @@ const styles = StyleSheet.create({
   },
   flexWrap: {
     flexWrap: 'wrap',
-    marginTop: 10,
+    marginVertical: 10,
   },
   weekDayItem: {
     flex: 1,

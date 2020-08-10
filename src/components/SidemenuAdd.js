@@ -1,8 +1,8 @@
 import React from 'react';
 import { TouchableOpacity, Image, StyleSheet } from 'react-native';
 
-export const SidemenuAdd = ({ navigation }) => (
-  <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('New')}>
+export const SidemenuAdd = ({ onPress }) => (
+  <TouchableOpacity style={styles.container} onPress={onPress}>
     <Image style={styles.menuIcon} source={require('@app/assets/images/new.png')} />
   </TouchableOpacity>
 );
