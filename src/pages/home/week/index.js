@@ -22,6 +22,7 @@ export default class WeekScreen extends React.Component {
     const { params } = this.props.route;
     const item = (params && params.selectedMonth) || monthList[0];
     setOptions({ title: `${item.s_month} - ${item.s_year}` });
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ monthData: getMonthByName(item.s_month, item.s_year), currentMonth: item });
   }
 
@@ -61,7 +62,12 @@ export default class WeekScreen extends React.Component {
               {[...Array(30).keys()].map((item) => (
                 <TouchableOpacity
                   key={item}
-                  style={[styles.dayItem, selectedDay === item + 1 && styles.selectedItem]}
+                  style={[
+                    styles.dayItem,
+                    selectedDay === item + 1 && styles.selectedItem,
+                    item % 10 === 9 && styles.sunDayItem,
+                    selectedDay === item + 1 && item % 10 === 9 && styles.sundaySelectedItem,
+                  ]}
                   onPress={() => this.setState({ selectedDay: item + 1 })}>
                   <Image style={styles.dayImage} resizeMode="contain" source={DAY_IMAGES[item % 10]} />
                   <Text>{item + 1}</Text>
@@ -161,8 +167,16 @@ const styles = StyleSheet.create({
     width: '10%',
     alignItems: 'center',
     height: 70,
-    marginVertical: 10,
+    paddingTop: 10,
     justifyContent: 'space-around',
+  },
+  sunDayItem: {
+    backgroundColor: Colors.lightpink,
+    borderRadius: 0,
+  },
+  sundaySelectedItem: {
+    backgroundColor: Colors.green,
+    borderRadius: 0,
   },
   weekDayImage: {
     width: '100%',
