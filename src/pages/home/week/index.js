@@ -21,7 +21,6 @@ export default class WeekScreen extends React.Component {
     const { setOptions } = this.props.navigation;
     const { params } = this.props.route;
     const item = (params && params.selectedMonth) || monthList[0];
-    console.log(item);
     setOptions({ title: `${item.s_month} - ${item.s_year}` });
     this.setState({ monthData: getMonthByName(item.s_month, item.s_year), currentMonth: item });
   }
@@ -81,7 +80,7 @@ export default class WeekScreen extends React.Component {
                   <Text style={styles.detailTitleText}>{sDayObject.holy_year || sDayObject.holy_week || 'Normal'}</Text>
                   <Text>Dekan week: {sDayObject.dekan_day}</Text>
                   <Text>Neteru: {sDayObject.neteru_week}</Text>
-                  <Text>{`${sDayObject.weekday} ${sDayObject.month} ${sDayObject.day}`}</Text>
+                  <Text>{`${sDayObject.weekday || ''} ${sDayObject.month || ''} ${sDayObject.day || ''}`}</Text>
                 </View>
               </View>
             </View>

@@ -46,15 +46,6 @@ export default class HomeScreen extends React.Component {
     </TouchableOpacity>
   );
 
-  getItemLayout = (data, index) => {
-    console.log(data, index);
-    return {
-      length: 80,
-      offset: 80 * index,
-      index,
-    };
-  };
-
   render() {
     return (
       <View style={styles.container}>

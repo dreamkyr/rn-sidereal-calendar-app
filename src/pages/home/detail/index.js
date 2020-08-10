@@ -1,10 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, Image, ScrollView } from 'react-native';
 import { Colors, SCREEN_WIDTH } from '@app/helper';
 import { getSMonthList, getMonthByName, SMONTH_DATA } from '@app/helper/data';
 import { MONTH_NAMES } from '@app/assets/images/monthNames';
-import { WEEK_DAY_IMAGES } from '@app/assets/images/weekDays';
-import { DAY_IMAGES } from '@app/assets/images/days';
 import { GOD_IMAGES } from '@app/assets/images/gods';
 import { MONTH_GOD_IMAGES } from '@app/assets/images/godSigns';
 
@@ -23,6 +21,7 @@ export default class DetailScreen extends React.Component {
     const { params } = this.props.route;
     const item = (params && params.selectedMonth) || monthList[0];
     setOptions({ title: `${item.s_month} ${item.s_year}` });
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ monthData: getMonthByName(item.s_month, item.s_year) });
   }
 
@@ -35,6 +34,7 @@ export default class DetailScreen extends React.Component {
     if (monthData.length === 0) {
       return null;
     }
+    const sMonthObject = SMONTH_DATA[monthData[0].s_month];
     return (
       <View style={styles.container}>
         <StatusBar translucent barStyle="light-content" backgroundColor="black" />
@@ -45,26 +45,26 @@ export default class DetailScreen extends React.Component {
           </View>
           <View style={styles.headerContainer}>
             <Text style={styles.dateText}>
-              ({SMONTH_DATA[monthData[0].s_month].nickname}) - {monthData[0].month} {monthData[0].day} - {monthData[monthData.length - 1].month}{' '}
+              ({sMonthObject.nickname}) - {monthData[0].month} {monthData[0].day} - {monthData[monthData.length - 1].month}{' '}
               {monthData[monthData.length - 1].day}, {monthData[monthData.length - 1].year}
             </Text>
           </View>
           <View style={[styles.headerContainer, styles.noBorder]}>
-            <Image style={styles.godImage} resizeMode="contain" source={GOD_IMAGES[0]} />
+            <Image style={styles.godImage} resizeMode="contain" source={GOD_IMAGES[sMonthObject.key]} />
           </View>
           <View style={styles.detailContainer}>
             <View style={styles.detailTitleContainer}>
               <View style={styles.titleImageContainer}>
-                <Image style={styles.monthGodImage} resizeMode="contain" source={MONTH_GOD_IMAGES[0]} />
+                <Image style={styles.monthGodImage} resizeMode="contain" source={MONTH_GOD_IMAGES[sMonthObject.key]} />
               </View>
               <View style={styles.titleTextContainer}>
                 <Text>
-                  {SMONTH_DATA[monthData[0].s_month].godTitle}: {SMONTH_DATA[monthData[0].s_month].godName}
+                  Goddess governing the month: <Text>{sMonthObject.godName}</Text>
                 </Text>
               </View>
             </View>
             <View style={styles.descriptionContainer}>
-              <Text>{SMONTH_DATA[monthData[0].s_month].description}</Text>
+              <Text>{sMonthObject.description}</Text>
             </View>
           </View>
         </ScrollView>
@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
     flex: 0.7,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingLeft: 10,
   },
   descriptionContainer: {
     paddingHorizontal: 10,
