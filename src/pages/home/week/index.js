@@ -1,5 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image, ScrollView } from 'react-native';
+import RNCalendarEvents from 'react-native-calendar-events';
+import moment from 'moment';
+import _ from 'lodash';
+
 import { SidemenuAdd } from '@app/components';
 import { Colors } from '@app/helper';
 import { getSMonthList, getMonthByName, SMONTH_DATA, getSDayObject } from '@app/helper/data';
@@ -15,6 +19,7 @@ export default class WeekScreen extends React.Component {
       monthData: [],
       selectedDay: null,
       currentMonth: {},
+      events: [],
     };
   }
 
@@ -28,25 +33,53 @@ export default class WeekScreen extends React.Component {
     });
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ monthData: getMonthByName(item.s_month, item.s_year), currentMonth: item });
+    RNCalendarEvents.checkPermissions().then((result) => {
+      if (result !== 'authorized') {
+        RNCalendarEvents.requestPermissions();
+      }
+    });
   }
+
+  fetchEvents = (startDate, endDate) => {
+    RNCalendarEvents.findCalendars().then((result) => {
+      if (result.length > 0) {
+        const cIds = result.filter((item) => item.isPrimary).map((item) => item.id);
+        RNCalendarEvents.fetchAllEvents(startDate, endDate, cIds).then((res) => {
+          this.setState({ events: _.sortBy(res, (item) => !item.allDay) });
+        });
+      }
+    });
+  };
+
+  onSelectDay = (index) => {
+    const { currentMonth } = this.state;
+    this.setState({ selectedDay: index });
+    const sDayObject = getSDayObject(index, currentMonth.s_month, currentMonth.s_year) || {};
+    const { year, month, day } = sDayObject;
+    if (!year || !month || !day) {
+      return;
+    }
+    const startDate = moment(`${month}/${day}/${year}`, 'MMMM/D/YYYY');
+    this.fetchEvents(startDate.toISOString(), startDate.add(1, 'days').toISOString());
+  };
 
   goToDetail = () => {
     this.props.navigation.navigate('Detail', { selectedMonth: this.state.currentMonth });
   };
 
   addEvent = () => {
-
-  }
+    this.props.navigation.navigate('New');
+  };
 
   render() {
-    const { monthData, selectedDay, currentMonth } = this.state;
+    const { monthData, selectedDay, currentMonth, events } = this.state;
     if (monthData.length === 0) {
       return null;
     }
     const sDayObject = getSDayObject(selectedDay, currentMonth.s_month, currentMonth.s_year) || {};
     return (
       <View style={styles.container}>
-        <StatusBar translucent barStyle="light-content" backgroundColor="black" />
+        <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
         <ScrollView contentContainerStyle={styles.scrollContentStyle}>
           <TouchableOpacity style={styles.headerContainer} onPress={this.goToDetail}>
             <Text style={styles.monthText}>{monthData[0].s_month}</Text>
@@ -76,7 +109,7 @@ export default class WeekScreen extends React.Component {
                     item % 10 === 9 && styles.sunDayItem,
                     selectedDay === item + 1 && item % 10 === 9 && styles.sundaySelectedItem,
                   ]}
-                  onPress={() => this.setState({ selectedDay: item + 1 })}>
+                  onPress={() => this.onSelectDay(item + 1)}>
                   <Image
                     style={[styles.dayImage, item >= 10 && { height: 15 * 2 }, item >= 20 && { height: 15 * 3 }]}
                     resizeMode="contain"
@@ -106,10 +139,26 @@ export default class WeekScreen extends React.Component {
           <View style={styles.agendaContainer}>
             <Text style={styles.detailText}>Today's Agenda</Text>
             <View style={styles.detailContainer}>
-              <View style={styles.detailTextContainer}>
-                <Text style={styles.detailTitleText}>Holiday Title</Text>
-                <Text>Dekan week: ...</Text>
-                <Text>Sep 9 Sunday</Text>
+              <View style={styles.eventListContainer}>
+                {events.map((event) => {
+                  if (event.allDay) {
+                    return (
+                      <View key={event.id} style={styles.eventItemContainer}>
+                        <Text style={styles.eventTime}>All-day</Text>
+                        <Text style={styles.eventTitle}>{event.title}</Text>
+                      </View>
+                    );
+                  }
+                  return (
+                    <View key={event.id} style={[styles.eventItemContainer, styles.eventNoBorder]}>
+                      <Text style={styles.eventTime}>
+                        {moment(event.startDate).format('HH:MM')} - {moment(event.endDate).format('HH:MM')}
+                      </Text>
+                      <Text style={styles.eventTitle}>{event.title}</Text>
+                    </View>
+                  );
+                })}
+                {events.length === 0 && <Text style={styles.noEventText}>No events</Text>}
               </View>
             </View>
           </View>
@@ -222,10 +271,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     borderRadius: 8,
     backgroundColor: Colors.white,
-    overflow: 'hidden',
     marginTop: 20,
+    shadowColor: 'black',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 5,
+    zIndex: 999,
   },
   detailImageContainer: {
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
     backgroundColor: Colors.green,
     flex: 0.2,
     justifyContent: 'center',
@@ -244,5 +300,35 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     marginBottom: 8,
+  },
+  eventListContainer: {
+    width: '100%',
+  },
+  eventItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.green,
+    width: '100%',
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+  },
+  eventNoBorder: {
+    borderBottomWidth: 0,
+  },
+  eventTime: {
+    color: Colors.green,
+    flex: 0.3,
+  },
+  eventTitle: {
+    color: Colors.black,
+    fontWeight: '400',
+    flex: 0.7,
+  },
+  noEventText: {
+    width: '100%',
+    textAlign: 'center',
+    paddingVertical: 20,
   },
 });

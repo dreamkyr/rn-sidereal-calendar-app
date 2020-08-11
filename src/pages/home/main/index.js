@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image } from 'react-native';
+import { SidemenuAdd } from '@app/components';
 import { Colors } from '@app/helper';
 import { getSMonthList, SMONTH_DATA } from '@app/helper/data';
 import { FlatList } from 'react-native-gesture-handler';
@@ -18,6 +19,17 @@ export default class HomeScreen extends React.Component {
     return {
       title: `${state.params.title}`,
     };
+  };
+
+  componentDidMount() {
+    const { setOptions } = this.props.navigation;
+    setOptions({
+      headerRight: () => <SidemenuAdd onPress={this.addEvent} />,
+    });
+  }
+
+  addEvent = () => {
+    this.props.navigation.navigate('New');
   };
 
   updateTitle = ({ item }) => {

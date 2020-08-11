@@ -37,7 +37,7 @@ export default class DetailScreen extends React.Component {
     const sMonthObject = SMONTH_DATA[monthData[0].s_month];
     return (
       <View style={styles.container}>
-        <StatusBar translucent barStyle="light-content" backgroundColor="black" />
+        <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
         <ScrollView contentContainerStyle={styles.scrollContentStyle}>
           <View style={styles.headerContainer} onPress={this.goToDetail}>
             <Text style={styles.monthText}>{monthData[0].s_month}</Text>
@@ -119,10 +119,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     marginHorizontal: 6,
     borderRadius: 8,
-    overflow: 'hidden',
     shadowColor: 'black',
-    shadowOffset: { width: 2, height: 8 },
-    shadowOpacity: 0.8,
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.2,
     shadowRadius: 6,
     elevation: 5,
   },
@@ -135,6 +134,7 @@ const styles = StyleSheet.create({
   titleImageContainer: {
     backgroundColor: Colors.green,
     borderBottomLeftRadius: 8,
+    borderTopLeftRadius: 8,
     height: '100%',
     flex: 0.3,
     justifyContent: 'center',
