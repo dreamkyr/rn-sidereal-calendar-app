@@ -1,6 +1,5 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Button } from 'react-native';
 
 import MainScreen from './main';
 import WeekScreen from './week';
