@@ -1,7 +1,7 @@
 import React from 'react';
-import { ScrollView, View, Image, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { ScrollView, View, Image, StyleSheet, TouchableOpacity, Text, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors, SCREEN_WIDTH } from '@app/helper';
+import { Colors, SCREEN_WIDTH, DONATE_URL, JOIN_URL, ABOUT_URL } from '@app/helper';
 
 export const SideMenu = ({ navigation }) => (
   <View style={styles.container}>
@@ -24,23 +24,43 @@ export const SideMenu = ({ navigation }) => (
         <View style={styles.viewContainer}>
           <Text style={styles.titleText}>Reconnecting Back to Nature</Text>
         </View>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.closeDrawer()}>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => {
+            navigation.closeDrawer();
+            Linking.openURL(ABOUT_URL);
+          }}>
           <Image source={require('@app/assets/images/sidemenu_help.png')} />
           <Text style={styles.menuText}>Help</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.closeDrawer()}>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => {
+            navigation.closeDrawer();
+            Linking.openURL(DONATE_URL);
+          }}>
           <Image source={require('@app/assets/images/sidemenu_donate.png')} />
           <Text style={styles.menuText}>Donate</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.closeDrawer()}>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => {
+            navigation.closeDrawer();
+            Linking.openURL(JOIN_URL);
+          }}>
           <Image source={require('@app/assets/images/sidemenu_join.png')} />
           <Text style={styles.menuText}>Join us</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Setting')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.closeDrawer()}>
           <Image source={require('@app/assets/images/sidemenu_setting.png')} />
           <Text style={styles.menuText}>Settings</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.viewContainer}>
+        <TouchableOpacity
+          style={styles.viewContainer}
+          onPress={() => {
+            navigation.closeDrawer();
+            Linking.openURL(ABOUT_URL);
+          }}>
           <Text style={styles.titleText}>About The Earth Center</Text>
         </TouchableOpacity>
       </SafeAreaView>
