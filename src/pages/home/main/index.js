@@ -22,10 +22,10 @@ export default class HomeScreen extends React.Component {
   };
 
   componentDidMount() {
-    const { setOptions } = this.props.navigation;
-    setOptions({
-      headerRight: () => <SidemenuAdd onPress={this.addEvent} />,
-    });
+    // const { setOptions } = this.props.navigation;
+    // setOptions({
+    //   headerRight: () => <SidemenuAdd onPress={this.addEvent} />,
+    // });
   }
 
   addEvent = () => {

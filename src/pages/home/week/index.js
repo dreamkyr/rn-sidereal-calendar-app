@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image, ScrollView, Alert } from 'react-native';
 import RNCalendarEvents from 'react-native-calendar-events';
 import moment from 'moment';
 import _ from 'lodash';
@@ -40,6 +40,12 @@ export default class WeekScreen extends React.Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.route.params?.eventId !== this.props.route.params?.eventId) {
+      this.onSelectDay(this.state.selectedDay);
+    }
+  }
+
   fetchEvents = (startDate, endDate) => {
     RNCalendarEvents.findCalendars().then((result) => {
       if (result.length > 0) {
@@ -68,7 +74,14 @@ export default class WeekScreen extends React.Component {
   };
 
   addEvent = () => {
-    this.props.navigation.navigate('New');
+    const { currentMonth, selectedDay } = this.state;
+    const sDayObject = getSDayObject(selectedDay, currentMonth.s_month, currentMonth.s_year) || {};
+    const { year, month, day } = sDayObject;
+    if (!year || !month || !day) {
+      Alert.alert('Please select valid Sidereal day.');
+      return;
+    }
+    this.props.navigation.navigate('New', { sDayObject });
   };
 
   render() {
@@ -152,7 +165,7 @@ export default class WeekScreen extends React.Component {
                   return (
                     <View key={event.id} style={[styles.eventItemContainer, styles.eventNoBorder]}>
                       <Text style={styles.eventTime}>
-                        {moment(event.startDate).format('HH:MM')} - {moment(event.endDate).format('HH:MM')}
+                        {moment(event.startDate).format('HH:mm')} - {moment(event.endDate).format('HH:mm')}
                       </Text>
                       <Text style={styles.eventTitle}>{event.title}</Text>
                     </View>

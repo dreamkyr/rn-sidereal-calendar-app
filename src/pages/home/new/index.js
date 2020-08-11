@@ -1,21 +1,45 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar, ScrollView, TextInput, Image, Switch} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar, ScrollView, TextInput, Image, Switch, Alert } from 'react-native';
+import moment from 'moment';
 import RNCalendarEvents from 'react-native-calendar-events';
-import { Colors } from '@app/helper';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+import { Colors, isEmpty } from '@app/helper';
 
 export default class AddEvent extends React.Component {
   constructor() {
     super();
     this.state = {
+      calendarId: null,
+      title: '',
       allDay: false,
       repeat: false,
+      sDayObject: {},
+      showStartPicker: false,
+      showEndPicker: false,
+      startDate: Date.now(),
+      endDate: Date.now(),
     };
   }
 
   componentDidMount() {
+    const { params } = this.props.route;
+    if (params.sDayObject) {
+      this.setState({
+        sDayObject: params.sDayObject,
+        startDate: moment(`${params.sDayObject.month}/${params.sDayObject.day}/${params.sDayObject.year}`, 'MMMM/D/YYYY'),
+        endDate: moment(`${params.sDayObject.month}/${params.sDayObject.day}/${params.sDayObject.year}`, 'MMMM/D/YYYY').add(1, 'hours'),
+      });
+    }
     RNCalendarEvents.checkPermissions().then((result) => {
       if (result !== 'authorized') {
         RNCalendarEvents.requestPermissions();
+      }
+    });
+    RNCalendarEvents.findCalendars().then((result) => {
+      if (result.length > 0) {
+        const cIds = result.filter((item) => item.isPrimary).map((item) => item.id);
+        this.setState({ calendarId: cIds[0] });
       }
     });
     const { setOptions } = this.props.navigation;
@@ -29,17 +53,52 @@ export default class AddEvent extends React.Component {
   }
 
   addEvent = () => {
-    console.log('');
+    const { title, calendarId, startDate, endDate, allDay } = this.state;
+    this.setState({ showStartPicker: false, showEndPicker: false });
+    if (isEmpty(title)) {
+      Alert.alert('Please input event title.');
+      return;
+    }
+    if (!calendarId) {
+      RNCalendarEvents.requestPermissions();
+      return;
+    }
+    RNCalendarEvents.saveEvent(title, {
+      calendarId,
+      allDay,
+      startDate: moment(startDate).toISOString(),
+      endDate: moment(endDate).toISOString(),
+    })
+      .then((result) => {
+        this.props.navigation.navigate('Week', { eventId: result });
+        Alert.alert('Successfully created event.');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  onChangeStartDate = (date) => {
+    this.setState({
+      startDate: moment(date).toDate(),
+      endDate: moment(date).add(1, 'hours'),
+    });
+  };
+
+  onChangeEndDate = (date) => {
+    this.setState({
+      endDate: moment(date).toDate(),
+    });
   };
 
   render() {
-    const { allDay, repeat } = this.state;
+    const { allDay, title, startDate, endDate, showStartPicker, showEndPicker } = this.state;
     return (
       <View style={styles.container}>
         <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
         <ScrollView contentContainerStyle={styles.scrollContentStyle}>
           <View style={styles.titleContainer}>
-            <TextInput style={styles.titleText} placeholder="Event title" />
+            <TextInput style={styles.titleText} value={title} onChangeText={(text) => this.setState({ title: text })} placeholder="Event title" />
           </View>
           <View style={styles.detailContainer}>
             <View style={styles.eventRow}>
@@ -47,20 +106,53 @@ export default class AddEvent extends React.Component {
                 <Image style={styles.clockImage} resizeMode="contain" source={require('@app/assets/images/clock.png')} />
                 <Text style={styles.labelText}>All day</Text>
               </View>
-              <Switch value={allDay} trackColor={{ true: Colors.main }} onValueChange={(value) => this.setState({ allDay: value })} />
+              <Switch
+                value={allDay}
+                trackColor={{ true: Colors.main }}
+                onValueChange={(value) => this.setState({ allDay: value, showStartPicker: false, showEndPicker: false })}
+              />
             </View>
-            <View style={[styles.eventRow, styles.extraPadding]}>
+            <TouchableOpacity
+              style={[styles.eventRow, styles.extraPadding]}
+              onPress={() => this.setState({ showStartPicker: !showStartPicker, showEndPicker: false })}>
               <Text style={styles.labelText}>Starts</Text>
-              <Text style={styles.labelText}>11:00 PM</Text>
-            </View>
-            <View style={[styles.eventRow, styles.extraPadding]}>
+              <Text style={styles.labelText}>{moment(startDate).format('DD / MMM')}</Text>
+              {!allDay && <Text style={styles.labelText}>{moment(startDate).format('HH:mm A')}</Text>}
+            </TouchableOpacity>
+            {!allDay && showStartPicker && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={moment(startDate).toDate()}
+                mode="time"
+                is24Hour={false}
+                display="default"
+                onChange={(e, date) => this.onChangeStartDate(date)}
+              />
+            )}
+            <TouchableOpacity
+              style={[styles.eventRow, styles.extraPadding]}
+              onPress={() => this.setState({ showEndPicker: !showEndPicker, showStartPicker: false })}>
               <Text style={styles.labelText}>Ends</Text>
-              <Text style={styles.labelText}>11:00 PM</Text>
-            </View>
-            <View style={[styles.eventRow, styles.extraPadding]}>
-              <Text style={styles.labelText}>Repeat</Text>
-              <Switch value={repeat} trackColor={{ true: Colors.main }} onValueChange={(value) => this.setState({ repeat: value })} />
-            </View>
+              {!allDay && <Text style={styles.labelText}>{moment(endDate).format('HH:mm A')}</Text>}
+            </TouchableOpacity>
+            {!allDay && showEndPicker && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={moment(endDate).toDate()}
+                mode="time"
+                is24Hour={false}
+                display="default"
+                minimumDate={moment(startDate).toDate()}
+                onChange={(e, date) => this.onChangeEndDate(date)}
+              />
+            )}
+            {!allDay && (
+              <View style={[styles.eventRow, styles.extraPadding]}>
+                <Text style={styles.labelText}>Repeat</Text>
+                <Text style={styles.labelText}>Never</Text>
+                {/* <Switch value={repeat} trackColor={{ true: Colors.main }} onValueChange={(value) => this.setState({ repeat: value })} /> */}
+              </View>
+            )}
           </View>
         </ScrollView>
       </View>
@@ -97,7 +189,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 35,
-    marginBottom: 20,
+    marginBottom: 10,
+    paddingVertical: 10,
   },
   clockContainer: {
     flexDirection: 'row',
