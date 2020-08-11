@@ -77,8 +77,12 @@ export default class WeekScreen extends React.Component {
                     selectedDay === item + 1 && item % 10 === 9 && styles.sundaySelectedItem,
                   ]}
                   onPress={() => this.setState({ selectedDay: item + 1 })}>
-                  <Image style={styles.dayImage} resizeMode="contain" source={DAY_IMAGES[item % 10]} />
-                  <Text>{item + 1}</Text>
+                  <Image
+                    style={[styles.dayImage, item >= 10 && { height: 15 * 2 }, item >= 20 && { height: 15 * 3 }]}
+                    resizeMode="contain"
+                    source={DAY_IMAGES[item]}
+                  />
+                  <Text style={styles.dayText}>{item + 1}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -177,9 +181,9 @@ const styles = StyleSheet.create({
   dayItem: {
     width: '10%',
     alignItems: 'center',
-    height: 70,
-    paddingTop: 10,
-    justifyContent: 'space-around',
+    minHeight: 50,
+    paddingVertical: 10,
+    justifyContent: 'space-between',
   },
   sunDayItem: {
     backgroundColor: Colors.lightpink,
@@ -196,6 +200,10 @@ const styles = StyleSheet.create({
   dayImage: {
     width: '100%',
     height: 15,
+    marginBottom: 10,
+  },
+  dayText: {
+    color: Colors.gray,
   },
   selectedItem: {
     backgroundColor: Colors.green,
