@@ -10,6 +10,7 @@ export const getSMonthList = () => {
     30,
   );
   const mList = [];
+  mList.push({ key: -1, nickname: '', isSection: true, s_year: 420 });
   chunkList.forEach((items) => {
     const item = {
       key: items[0].key,
@@ -37,6 +38,9 @@ export const getSMonthList = () => {
       year: items[items.length - 1].year,
       s_year: items[items.length - 1].s_year,
     };
+    if (key !== '423') {
+      mList.push({ key: items[0].key + 1, nickname: '', isSection: true, s_year: items[0].s_year + 1 });
+    }
     mList.push(item);
   });
   return _.sortBy(mList, (item) => item.key);

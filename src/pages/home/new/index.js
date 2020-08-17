@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar, ScrollView, TextInput, Image, Switch, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar, ScrollView, TextInput, Image, Switch, Alert, Platform } from 'react-native';
 import moment from 'moment';
 import RNCalendarEvents from 'react-native-calendar-events';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -19,6 +19,7 @@ export default class AddEvent extends React.Component {
       showEndPicker: false,
       startDate: Date.now(),
       endDate: Date.now(),
+      alerts: [],
     };
   }
 
@@ -52,8 +53,14 @@ export default class AddEvent extends React.Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.route.params?.alerts !== this.props.route.params?.alerts) {
+      this.setState({ alerts: this.props.route.params?.alerts });
+    }
+  }
+
   addEvent = () => {
-    const { title, calendarId, startDate, endDate, allDay } = this.state;
+    const { title, calendarId, startDate, endDate, allDay, alerts } = this.state;
     this.setState({ showStartPicker: false, showEndPicker: false });
     if (isEmpty(title)) {
       Alert.alert('Please input event title.');
@@ -68,9 +75,10 @@ export default class AddEvent extends React.Component {
       allDay,
       startDate: moment(startDate).toISOString(),
       endDate: moment(endDate).toISOString(),
+      alarms: alerts.map((item) => ({ date: Platform.OS === 'ios' ? -1 * item.date : item.date })),
     })
       .then((result) => {
-        this.props.navigation.navigate('Week', { eventId: result });
+        this.props.navigation.navigate('Month', { eventId: result });
         Alert.alert('Successfully created event.');
       })
       .catch((error) => {
@@ -91,8 +99,12 @@ export default class AddEvent extends React.Component {
     });
   };
 
+  gotoAlert = () => {
+    this.props.navigation.navigate('Alert', { alerts: this.state.alerts });
+  };
+
   render() {
-    const { allDay, title, startDate, endDate, showStartPicker, showEndPicker } = this.state;
+    const { allDay, title, startDate, endDate, showStartPicker, showEndPicker, alerts } = this.state;
     return (
       <View style={styles.container}>
         <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
@@ -153,6 +165,10 @@ export default class AddEvent extends React.Component {
                 {/* <Switch value={repeat} trackColor={{ true: Colors.main }} onValueChange={(value) => this.setState({ repeat: value })} /> */}
               </View>
             )}
+            <TouchableOpacity style={[styles.eventRow, styles.extraPadding]} onPress={this.gotoAlert}>
+              <Text style={styles.labelText}>Alert</Text>
+              <Text style={styles.labelText}>{alerts.length === 0 ? 'None' : alerts[0].label}</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </View>

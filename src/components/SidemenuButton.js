@@ -3,14 +3,14 @@ import { TouchableOpacity, Image, StyleSheet } from 'react-native';
 
 export const SidemenuButton = ({ navigation }) => (
   <TouchableOpacity onPress={() => navigation.openDrawer()}>
-    <Image style={styles.menuIcon} source={require('@app/assets/images/menu.png')} />
+    <Image resizeMode="contain" style={styles.menuIcon} source={require('@app/assets/images/menu.png')} />
   </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({
   menuIcon: {
-    width: 45,
-    height: 45,
+    width: 25,
+    height: 20,
     marginLeft: 10,
   },
 });

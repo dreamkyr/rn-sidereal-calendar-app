@@ -13,13 +13,17 @@ export const SideMenu = ({ navigation }) => (
         <TouchableOpacity style={styles.viewContainer} onPress={() => navigation.navigate('Main')}>
           <Text style={styles.titleText}>View</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Week')}>
+        {/* <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Week')}>
           <Image source={require('@app/assets/images/sidemenu_weekly.png')} />
           <Text style={styles.menuText}>Dekan (Weekly)</Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Month')}>
+          <Image source={require('@app/assets/images/sidemenu_monthly.png')} />
+          <Text style={styles.menuText}>Dekan (Monthly)</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Main')}>
           <Image source={require('@app/assets/images/sidemenu_monthly.png')} />
-          <Text style={styles.menuText}>Medu (Monthly)</Text>
+          <Text style={styles.menuText}>Medu (Yearly)</Text>
         </TouchableOpacity>
         <View style={styles.viewContainer}>
           <Text style={styles.titleText}>Reconnecting Back to Nature</Text>

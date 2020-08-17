@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image } from 'react-native';
-import { SidemenuAdd } from '@app/components';
-import { Colors } from '@app/helper';
+import { Colors, SCREEN_WIDTH } from '@app/helper';
 import { getSMonthList, SMONTH_DATA } from '@app/helper/data';
 import { FlatList } from 'react-native-gesture-handler';
 import { MONTH_NAMES } from '@app/assets/images/monthNames';
@@ -21,13 +20,6 @@ export default class HomeScreen extends React.Component {
     };
   };
 
-  componentDidMount() {
-    // const { setOptions } = this.props.navigation;
-    // setOptions({
-    //   headerRight: () => <SidemenuAdd onPress={this.addEvent} />,
-    // });
-  }
-
   addEvent = () => {
     this.props.navigation.navigate('New');
   };
@@ -40,23 +32,32 @@ export default class HomeScreen extends React.Component {
     }
   };
 
-  gotoWeeklyView = (item) => {
-    this.props.navigation.navigate('Week', { selectedMonth: item });
+  gotoMonthlyView = (item) => {
+    this.props.navigation.navigate('Month', { selectedMonth: item });
   };
 
-  renderItem = (item) => (
-    <TouchableOpacity style={styles.itemContainer} onPress={() => this.gotoWeeklyView(item)}>
-      <View style={styles.monthContainer}>
-        <Text style={styles.monthText}>{item.s_month}</Text>
-        <Image style={styles.monthImage} resizeMode="contain" source={MONTH_NAMES[item.s_month]} />
-      </View>
-      <View>
-        <Text style={styles.dateText}>
-          ({SMONTH_DATA[item.s_month].nickname}) - {item.from_month} {item.from_day} - {item.to_month} {item.to_day}, {item.year}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+  renderItem = (item) => {
+    if (item.isSection) {
+      return (
+        <View style={[styles.itemContainer, styles.itemSection]}>
+          <Text style={styles.sectionYear}>{item.s_year}</Text>
+        </View>
+      );
+    }
+    return (
+      <TouchableOpacity style={[styles.itemContainer, item.s_month === 'Nwt' && styles.noBottomBorder]} onPress={() => this.gotoMonthlyView(item)}>
+        <View style={styles.monthContainer}>
+          <Text style={styles.monthText}>{item.s_month}</Text>
+          <Image style={styles.monthImage} resizeMode="contain" source={MONTH_NAMES[item.s_month]} />
+        </View>
+        <View>
+          <Text style={styles.dateText}>
+            ({SMONTH_DATA[item.s_month].nickname}) - {item.from_month} {item.from_day} - {item.to_month} {item.to_day}, {item.year}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   render() {
     return (
@@ -90,6 +91,18 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.black,
     borderBottomWidth: 3,
   },
+  itemSection: {
+    width: SCREEN_WIDTH,
+    borderBottomWidth: 0.5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginLeft: -10,
+    marginTop: 20,
+    marginBottom: 5,
+  },
+  noBottomBorder: {
+    borderBottomWidth: 0,
+  },
   monthContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -112,5 +125,10 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     fontWeight: '300',
     paddingLeft: 10,
+  },
+  sectionYear: {
+    fontSize: 30,
+    color: Colors.gray,
+    fontWeight: '900',
   },
 });
