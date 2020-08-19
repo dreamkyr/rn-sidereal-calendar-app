@@ -57,6 +57,14 @@ export const getSDayObject = (s_day, s_month, s_year) => {
   return data.find((item) => item.s_day === s_day && item.s_month === s_month && item.s_year === s_year);
 };
 
+export const getTodayMonthKey = () => {
+  const month = getSMonthList().find((item) => item.from_month === moment().format('MMMM') && item.year === moment().format('YYYY'));
+  if (month) {
+    return month.key;
+  }
+  return false;
+};
+
 export const SMONTH_DATA = {
   Tehuti: {
     nickname: 'THOTH',

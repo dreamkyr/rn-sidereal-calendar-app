@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image } from 'react-native';
-import { Colors, SCREEN_WIDTH } from '@app/helper';
+import { Colors, SCREEN_WIDTH, MONTH_COLORS } from '@app/helper';
 import { getSMonthList, SMONTH_DATA } from '@app/helper/data';
 import { FlatList } from 'react-native-gesture-handler';
 import { MONTH_NAMES } from '@app/assets/images/monthNames';
@@ -47,7 +47,7 @@ export default class HomeScreen extends React.Component {
     return (
       <TouchableOpacity style={[styles.itemContainer, item.s_month === 'Nwt' && styles.noBottomBorder]} onPress={() => this.gotoMonthlyView(item)}>
         <View style={styles.monthContainer}>
-          <Text style={styles.monthText}>{item.s_month}</Text>
+          <Text style={[styles.monthText, { color: MONTH_COLORS[item.s_month] }]}>{item.s_month}</Text>
           <Image style={styles.monthImage} resizeMode="contain" source={MONTH_NAMES[item.s_month]} />
         </View>
         <View>

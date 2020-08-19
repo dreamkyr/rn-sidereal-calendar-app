@@ -1,17 +1,17 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image, ScrollView, Alert, FlatList } from 'react-native';
 import RNCalendarEvents from 'react-native-calendar-events';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { SidemenuAdd } from '@app/components';
-import { Colors } from '@app/helper';
-import { getSMonthList, getMonthByName, SMONTH_DATA, getSDayObject } from '@app/helper/data';
+import { SidemenuAdd, MonthItem } from '@app/components';
+import { Colors, SCREEN_WIDTH, MONTH_COLORS } from '@app/helper';
+import { getSMonthList, getMonthByName, SMONTH_DATA, getSDayObject, getTodayMonthKey } from '@app/helper/data';
 import { MONTH_NAMES } from '@app/assets/images/monthNames';
 import { WEEK_DAY_IMAGES } from '@app/assets/images/weekDays';
 import { DAY_IMAGES } from '@app/assets/images/days';
 
-const monthList = getSMonthList();
+const monthList = getSMonthList().filter((item) => !item.isSection);
 export default class MonthScreen extends React.Component {
   constructor() {
     super();
@@ -21,7 +21,10 @@ export default class MonthScreen extends React.Component {
       currentMonth: {},
       events: [],
       monthEvents: [],
+      currentIndex: null,
     };
+    this.viewabilityConfig = { viewAreaCoveragePercentThreshold: 50 };
+    this.flatListRef = null;
   }
 
   componentDidMount() {
@@ -33,7 +36,20 @@ export default class MonthScreen extends React.Component {
       headerRight: () => <SidemenuAdd onPress={this.addEvent} />,
     });
     // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({ monthData: getMonthByName(item.s_month, item.s_year), currentMonth: item });
+    this.setState({
+      monthData: getMonthByName(item.s_month, item.s_year),
+      currentMonth: item,
+    });
+    // this.fetchMonthEvents(item);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.route.params?.eventId !== this.props.route.params?.eventId) {
+      this.onSelectDay(this.state.selectedDay);
+    }
+  }
+
+  fetchMonthEvents = (item) => {
     RNCalendarEvents.checkPermissions().then((result) => {
       if (result !== 'authorized') {
         RNCalendarEvents.requestPermissions();
@@ -49,13 +65,7 @@ export default class MonthScreen extends React.Component {
         });
       }
     });
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.route.params?.eventId !== this.props.route.params?.eventId) {
-      this.onSelectDay(this.state.selectedDay);
-    }
-  }
+  };
 
   fetchEvents = (startDate, endDate) => {
     RNCalendarEvents.findCalendars().then((result) => {
@@ -109,6 +119,46 @@ export default class MonthScreen extends React.Component {
     this.props.navigation.navigate('New', { sDayObject });
   };
 
+  renderMonth = () => {
+    const { selectedDay, currentMonth, monthEvents } = this.state;
+    return <MonthItem selectedDay={selectedDay} onSelectDay={this.onSelectDay} currentMonth={currentMonth} monthEvents={monthEvents} />;
+  };
+
+  handleViewableItemsChanged = ({ viewableItems }) => {
+    const { setOptions } = this.props.navigation;
+    const [itemChanged] = viewableItems;
+    const { item: month } = itemChanged;
+    setOptions({
+      title: `${month.s_month} - ${month.s_year}`,
+      headerRight: () => <SidemenuAdd onPress={this.addEvent} />,
+    });
+    this.fetchMonthEvents(month);
+    this.setState({
+      currentMonth: month,
+      monthData: getMonthByName(month.s_month, month.s_year),
+      monthEvents: [],
+      currentIndex: monthList.findIndex((item) => item.key === month.key),
+    });
+  };
+
+  gotoNextMonth = () => {
+    const { currentIndex } = this.state;
+    if (this.flatListRef && currentIndex !== monthList.length - 1) {
+      this.flatListRef.scrollToIndex({ animated: true, index: currentIndex + 1 });
+    }
+  };
+
+  gotoPreviousMonth = () => {
+    const { currentIndex } = this.state;
+    if (this.flatListRef && currentIndex !== 0) {
+      this.flatListRef.scrollToIndex({ animated: true, index: currentIndex - 1 });
+    }
+  };
+
+  gotoCurrentMonth = () => {
+    // console.log(getTodayMonthKey());
+  };
+
   render() {
     const { monthData, selectedDay, currentMonth, events, monthEvents } = this.state;
     if (monthData.length === 0) {
@@ -120,15 +170,13 @@ export default class MonthScreen extends React.Component {
         <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
         <ScrollView contentContainerStyle={styles.scrollContentStyle}>
           <TouchableOpacity style={styles.headerContainer} onPress={this.goToDetail}>
-            <Text style={styles.monthText}>
-              {monthData[0].s_month} ({monthData[0].s_year})
-            </Text>
+            <Text style={[styles.monthText, { color: MONTH_COLORS[monthData[0].s_month] }]}>{monthData[0].s_month}</Text>
             <Image style={styles.monthImage} resizeMode="contain" source={MONTH_NAMES[monthData[0].s_month]} />
           </TouchableOpacity>
           <View style={styles.headerContainer}>
             <Text style={styles.dateText}>
-              ({SMONTH_DATA[monthData[0].s_month].nickname}) - {monthData[0].month} {monthData[0].day} - {monthData[monthData.length - 1].month}{' '}
-              {monthData[monthData.length - 1].day}, {monthData[monthData.length - 1].year}
+              ({SMONTH_DATA[monthData[0].s_month].nickname} {monthData[0].s_year}) - {monthData[0].month} {monthData[0].day} -{' '}
+              {monthData[monthData.length - 1].month} {monthData[monthData.length - 1].day}, {monthData[monthData.length - 1].year}
             </Text>
           </View>
           <View style={styles.calendarContainer}>
@@ -139,20 +187,33 @@ export default class MonthScreen extends React.Component {
                 </View>
               ))}
             </View>
-            <View style={[styles.weekDayContainer, styles.flexWrap]}>
-              {[...Array(30).keys()].map((item) => (
-                <TouchableOpacity
-                  key={item}
-                  style={[styles.dayItem, this.hasEvent(item + 1) && styles.hasEventItem, selectedDay === item + 1 && styles.selectedItem]}
-                  onPress={() => this.onSelectDay(item + 1)}>
-                  <Image
-                    style={[styles.dayImage, item >= 10 && { height: 15 * 2 }, item >= 20 && { height: 15 * 3 }]}
-                    resizeMode="contain"
-                    source={DAY_IMAGES[item]}
-                  />
-                  <Text style={styles.dayText}>{item + 1}</Text>
-                </TouchableOpacity>
-              ))}
+            <FlatList
+              ref={(ref) => {
+                this.flatListRef = ref;
+              }}
+              horizontal
+              contentContainerStyle={styles.monthItemContainer}
+              style={styles.monthCardContainer}
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              data={monthList}
+              renderItem={this.renderMonth}
+              keyExtractor={(item, index) => index.toString()}
+              viewabilityConfig={this.viewabilityConfig}
+              getItemLayout={(data, index) => ({ length: SCREEN_WIDTH - 10, offset: (SCREEN_WIDTH - 10) * index, index })}
+              initialScrollIndex={monthList.findIndex((item) => item.key === currentMonth.key)}
+              onViewableItemsChanged={this.handleViewableItemsChanged}
+            />
+            <View style={styles.directionWrapper}>
+              <TouchableOpacity style={styles.arrowButton} onPress={this.gotoPreviousMonth}>
+                <Text>◀︎</Text>
+              </TouchableOpacity>
+              {/* <TouchableOpacity style={styles.arrowButton} onPress={this.gotoCurrentMonth}>
+                <Text>Today</Text>
+              </TouchableOpacity> */}
+              <TouchableOpacity style={styles.arrowButton} onPress={this.gotoNextMonth}>
+                <Text>▶︎</Text>
+              </TouchableOpacity>
             </View>
           </View>
           {selectedDay && (
@@ -210,7 +271,7 @@ export default class MonthScreen extends React.Component {
                     if (event.allDay) {
                       return (
                         <View key={event.id} style={[styles.eventItemContainer, styles.eventNoBorder]}>
-                          <Text style={styles.eventTime}>{`All-day ${moment(event.startDate).format('MMMM D')}`}</Text>
+                          <Text style={styles.eventTime}>{`All-day ${moment(event.startDate).format('MMM D')}`}</Text>
                           <Text style={styles.eventTitle}>{event.title}</Text>
                         </View>
                       );
@@ -283,6 +344,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     borderBottomColor: Colors.black,
     borderBottomWidth: 3,
+  },
+  monthCardContainer: {
+    marginTop: 20,
   },
   weekDayContainer: {
     width: '100%',
@@ -406,5 +470,14 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
     paddingVertical: 20,
+  },
+  directionWrapper: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  arrowButton: {
+    padding: 10,
   },
 });
