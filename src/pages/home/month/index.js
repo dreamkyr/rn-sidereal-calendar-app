@@ -337,8 +337,6 @@ const styles = StyleSheet.create({
   monthText: {
     color: Colors.green,
     fontSize: 30,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
     textAlign: 'center',
     fontFamily: 'TrajanPro-Bold',
   },

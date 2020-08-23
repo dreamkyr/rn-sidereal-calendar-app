@@ -110,9 +110,8 @@ const styles = StyleSheet.create({
   monthText: {
     color: Colors.green,
     fontSize: 30,
-    fontWeight: 'bold',
     width: '60%',
-    textTransform: 'uppercase',
+    fontFamily: 'TrajanPro-Bold',
   },
   monthImage: {
     height: 50,
