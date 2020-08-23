@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, StatusBar, Image, ScrollView } from 'react-native';
-import { Colors, SCREEN_WIDTH } from '@app/helper';
+import { Colors, SCREEN_WIDTH, MONTH_COLORS } from '@app/helper';
 import { getSMonthList, getMonthByName, SMONTH_DATA } from '@app/helper/data';
 import { MONTH_NAMES } from '@app/assets/images/monthNames';
 import { GOD_IMAGES } from '@app/assets/images/gods';
@@ -39,13 +39,22 @@ export default class DetailScreen extends React.Component {
       <View style={styles.container}>
         <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
         <ScrollView contentContainerStyle={styles.scrollContentStyle}>
-          <View style={styles.headerContainer} onPress={this.goToDetail}>
-            <Text style={styles.monthText}>{monthData[0].s_month}</Text>
+          <View
+            style={[styles.headerContainer, { borderColor: MONTH_COLORS[monthData[0].s_year], borderBottomColor: MONTH_COLORS[monthData[0].s_year] }]}
+            onPress={this.goToDetail}>
+            <View style={styles.monthTextWrapper}>
+              <Text style={[styles.monthText, { color: MONTH_COLORS[monthData[0].s_year] }]}>{monthData[0].s_month}</Text>
+              <Text style={[styles.dateText, { color: MONTH_COLORS[monthData[0].s_year] }]}>({SMONTH_DATA[monthData[0].s_month].nickname})</Text>
+            </View>
             <Image style={styles.monthImage} resizeMode="contain" source={MONTH_NAMES[monthData[0].s_month]} />
           </View>
-          <View style={styles.headerContainer}>
+          <View
+            style={[
+              styles.headerContainer,
+              { borderColor: MONTH_COLORS[monthData[0].s_year], borderBottomColor: MONTH_COLORS[monthData[0].s_year] },
+            ]}>
             <Text style={styles.dateText}>
-              ({sMonthObject.nickname}) - {monthData[0].month} {monthData[0].day} - {monthData[monthData.length - 1].month}{' '}
+              {monthData[0].month} {monthData[0].day}, {monthData[0].year} - {monthData[monthData.length - 1].month}{' '}
               {monthData[monthData.length - 1].day}, {monthData[monthData.length - 1].year}
             </Text>
           </View>
@@ -90,15 +99,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 3,
     justifyContent: 'center',
   },
-  monthText: {
+  monthTextWrapper: {
     paddingLeft: 10,
+    flex: 1,
+    width: '60%',
+  },
+  monthText: {
     color: Colors.green,
     fontSize: 30,
-    fontWeight: 'bold',
-    width: '60%',
-    textTransform: 'uppercase',
-    flex: 1,
     textAlign: 'center',
+    fontFamily: 'TrajanPro-Bold',
   },
   monthImage: {
     height: 50,
@@ -107,6 +117,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     textTransform: 'uppercase',
+    textAlign: 'center',
   },
   godImage: {
     width: SCREEN_WIDTH * 0.8,

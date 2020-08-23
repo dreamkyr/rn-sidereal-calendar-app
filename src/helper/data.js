@@ -230,3 +230,30 @@ export const SMONTH_DATA = {
       'She is the granddaughter of Ra and the wife of Geb.',
   },
 };
+
+export const HELP_TEXT = [
+  {
+    section: 'Understanding the Calendar',
+    content:
+      'The Sidereal Calendar is the calendar that was used during the times of the Pharaohs in Kemet. This is humanity’s oldest calendar, yet it is still in use today as the most astronomically accurate calendar in human history.\n' +
+      'Throughout the world, many cultures have been forced to use the Gregorian calendar because of colonization. The Sidereal Calendar gives us a link to humanity’s original culture while providing accurate time division. It unites all of humanity as one people, while giving all of us a reference in time and space that is not based on socio-religious or political events.\n' +
+      'All calculations of the calendar are based on the Great Heliacal Rising of the Sirius Star. The Sidereal Calendar is therefore astronomically based, and as a result, entirely scientific. The Great Heliacal Rising of the Sirius star occurs every 1461 years. That interval of 1461 years is what we call 1 Great Year, or Year of the Gods. We are now in year 420 of that 1461-year cycle.\n' +
+      'Our Ancestors were well aware of the fact that after four years of 365 days; Sirius rises on the second day of that year, after 8 years, on the third day of that year, after 12 years on the fourth day and so on. The intervals are compensated for by adding one day to every four years of 365 days. So, the seasonal year is made of 12 months of 30 days plus a thirteenth month of five days which becomes six days every four years.  And this system will be self-repetitive after a new heliacal rising.\n' +
+      'After 1,460 years, an additional year is added for astronomic observance. It absorbs all surpluses. During this period all necessary adjustments will be made to find the exact moment for a new start.  A new 1st of Tehuti of year one will thus start independently at an astronomically perfect moment.',
+  },
+  {
+    section: 'Month (Mesoot)',
+    content:
+      'Each month is governed by a Divinity; you may find information on this divinity by clicking on the hieroglyphics to the right of the month’s name in monthly view. Under the information of the Divinity for each month, you will find the Divinities characteristics along with any taboos for the people born under the gods of that given month.',
+  },
+  {
+    section: 'Dekan (week)',
+    content:
+      'Each week is 10 days long, has a name and is governed by divinities. You will see this information in the monthly view by clicking on any given day.',
+  },
+  {
+    section: 'Holy Days',
+    content:
+      'You will find various holy days on the agenda view for each month, if you click on ??? you will find more information instructing you on how to observe the holy day.',
+  },
+];

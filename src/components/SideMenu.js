@@ -31,8 +31,8 @@ export const SideMenu = ({ navigation }) => (
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() => {
-            navigation.closeDrawer();
-            Linking.openURL(ABOUT_URL);
+            // navigation.closeDrawer();
+            navigation.navigate('Help');
           }}>
           <Image source={require('@app/assets/images/sidemenu_help.png')} />
           <Text style={styles.menuText}>Help</Text>
