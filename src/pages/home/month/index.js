@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import { SidemenuAdd, MonthItem } from '@app/components';
 import { Colors, SCREEN_WIDTH, MONTH_COLORS } from '@app/helper';
-import { getSMonthList, getMonthByName, SMONTH_DATA, getSDayObject, getTodayMonthKey } from '@app/helper/data';
+import { getSMonthList, getMonthByName, SMONTH_DATA, getSDayObject } from '@app/helper/data';
 import { MONTH_NAMES } from '@app/assets/images/monthNames';
 import { WEEK_DAY_IMAGES } from '@app/assets/images/weekDays';
 import { DAY_IMAGES } from '@app/assets/images/days';
