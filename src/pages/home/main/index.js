@@ -50,7 +50,7 @@ export default class HomeScreen extends React.Component {
           <Text style={[styles.monthText, { color: MONTH_COLORS[item.s_month] }]}>{item.s_month}</Text>
           <Image style={styles.monthImage} resizeMode="contain" source={MONTH_NAMES[item.s_month]} />
         </View>
-        <View>
+        <View style={styles.dateContainer}>
           <Text style={styles.dateText}>
             ({SMONTH_DATA[item.s_month].nickname}) - {item.from_month} {item.from_day} - {item.to_month} {item.to_day}, {item.year}
           </Text>
@@ -83,11 +83,10 @@ const styles = StyleSheet.create({
   },
   listContentStyle: {
     paddingBottom: 50,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
   },
   itemContainer: {
-    paddingVertical: 20,
-    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderBottomColor: Colors.black,
     borderBottomWidth: 3,
   },
@@ -96,7 +95,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    marginLeft: -10,
     marginTop: 20,
     marginBottom: 5,
   },
@@ -107,9 +105,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    marginHorizontal: 20,
   },
   monthText: {
-    paddingLeft: 10,
     color: Colors.green,
     fontSize: 30,
     fontWeight: 'bold',
@@ -120,15 +118,17 @@ const styles = StyleSheet.create({
     height: 50,
     width: '40%',
   },
+  dateContainer: {
+    alignItems: 'center',
+  },
   dateText: {
     fontSize: 16,
     textTransform: 'uppercase',
     fontWeight: '300',
-    paddingLeft: 10,
   },
   sectionYear: {
     fontSize: 30,
-    color: Colors.gray,
-    fontWeight: '900',
+    color: Colors.red,
+    fontWeight: 'bold',
   },
 });

@@ -70,7 +70,7 @@ export default class AddEvent extends React.Component {
       RNCalendarEvents.requestPermissions();
       return;
     }
-    RNCalendarEvents.saveEvent(title, {
+    RNCalendarEvents.saveEvent(title.trim(), {
       calendarId,
       allDay,
       startDate: moment(startDate).toISOString(),

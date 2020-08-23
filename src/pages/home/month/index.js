@@ -87,7 +87,7 @@ export default class MonthScreen extends React.Component {
       return;
     }
     const startDate = moment(`${month}/${day}/${year}`, 'MMMM/D/YYYY');
-    this.fetchEvents(startDate.toISOString(), startDate.add(1, 'days').toISOString());
+    this.fetchEvents(startDate.toISOString(), startDate.add(2, 'days').toISOString());
   };
 
   goToDetail = () => {
@@ -134,6 +134,7 @@ export default class MonthScreen extends React.Component {
     });
     this.fetchMonthEvents(month);
     this.setState({
+      selectedDay: null,
       currentMonth: month,
       monthData: getMonthByName(month.s_month, month.s_year),
       monthEvents: [],
@@ -179,6 +180,17 @@ export default class MonthScreen extends React.Component {
               {monthData[monthData.length - 1].month} {monthData[monthData.length - 1].day}, {monthData[monthData.length - 1].year}
             </Text>
           </View>
+          <View style={styles.directionWrapper}>
+            <TouchableOpacity style={styles.arrowButton} onPress={this.gotoPreviousMonth}>
+              <Text>◀︎</Text>
+            </TouchableOpacity>
+            {/* <TouchableOpacity style={styles.arrowButton} onPress={this.gotoCurrentMonth}>
+                <Text>Today</Text>
+              </TouchableOpacity> */}
+            <TouchableOpacity style={styles.arrowButton} onPress={this.gotoNextMonth}>
+              <Text>▶︎</Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.calendarContainer}>
             <View style={styles.weekDayContainer}>
               {WEEK_DAY_IMAGES.map((item, index) => (
@@ -204,17 +216,6 @@ export default class MonthScreen extends React.Component {
               initialScrollIndex={monthList.findIndex((item) => item.key === currentMonth.key)}
               onViewableItemsChanged={this.handleViewableItemsChanged}
             />
-            <View style={styles.directionWrapper}>
-              <TouchableOpacity style={styles.arrowButton} onPress={this.gotoPreviousMonth}>
-                <Text>◀︎</Text>
-              </TouchableOpacity>
-              {/* <TouchableOpacity style={styles.arrowButton} onPress={this.gotoCurrentMonth}>
-                <Text>Today</Text>
-              </TouchableOpacity> */}
-              <TouchableOpacity style={styles.arrowButton} onPress={this.gotoNextMonth}>
-                <Text>▶︎</Text>
-              </TouchableOpacity>
-            </View>
           </View>
           {selectedDay && (
             <View style={styles.agendaContainer}>
@@ -281,7 +282,7 @@ export default class MonthScreen extends React.Component {
                         <Text style={styles.eventTime}>
                           {moment(event.startDate).format('HH:mm')} - {moment(event.endDate).format('HH:mm MMMM D')}
                         </Text>
-                        <Text style={styles.eventTitle}>{event.title}</Text>
+                        <Text style={styles.eventTitle}>{event.title.trim()}</Text>
                       </View>
                     );
                   })}
@@ -333,7 +334,7 @@ const styles = StyleSheet.create({
     width: '40%',
   },
   dateText: {
-    fontSize: 16,
+    fontSize: 15,
     textTransform: 'uppercase',
   },
   detailText: {
@@ -472,7 +473,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   directionWrapper: {
-    paddingHorizontal: 10,
+    paddingTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
