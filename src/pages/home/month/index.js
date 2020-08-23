@@ -59,7 +59,7 @@ export default class MonthScreen extends React.Component {
           if (e_result.length > 0) {
             const cIds = e_result.map((sItem) => sItem.id);
             RNCalendarEvents.fetchAllEvents(startDate.toISOString(), startDate.add(30, 'days').toISOString(), cIds).then((res) => {
-              this.setState({ monthEvents: res });
+              this.setState({ monthEvents: _.sortBy(res, (eItem) => eItem.startDate) });
             });
           }
         });
@@ -170,14 +170,24 @@ export default class MonthScreen extends React.Component {
       <View style={styles.container}>
         <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
         <ScrollView contentContainerStyle={styles.scrollContentStyle}>
-          <TouchableOpacity style={styles.headerContainer} onPress={this.goToDetail}>
-            <Text style={[styles.monthText, { color: MONTH_COLORS[monthData[0].s_month] }]}>{monthData[0].s_month}</Text>
+          <TouchableOpacity
+            style={[
+              styles.headerContainer,
+              styles.eventNoBorder,
+              styles.headerTitleButton,
+              { borderColor: MONTH_COLORS[monthData[0].s_year], borderBottomColor: MONTH_COLORS[monthData[0].s_year] },
+            ]}
+            onPress={this.goToDetail}>
+            <View style={styles.monthTextWrapper}>
+              <Text style={[styles.monthText, { color: MONTH_COLORS[monthData[0].s_year] }]}>{monthData[0].s_month}</Text>
+              <Text style={[styles.dateText, { color: MONTH_COLORS[monthData[0].s_year] }]}>({SMONTH_DATA[monthData[0].s_month].nickname})</Text>
+            </View>
             <Image style={styles.monthImage} resizeMode="contain" source={MONTH_NAMES[monthData[0].s_month]} />
           </TouchableOpacity>
-          <View style={styles.headerContainer}>
-            <Text style={styles.dateText}>
-              ({SMONTH_DATA[monthData[0].s_month].nickname} {monthData[0].s_year}) - {monthData[0].month} {monthData[0].day} -{' '}
-              {monthData[monthData.length - 1].month} {monthData[monthData.length - 1].day}, {monthData[monthData.length - 1].year}
+          <View style={[styles.headerContainer, { borderBottomColor: MONTH_COLORS[monthData[0].s_year] }]}>
+            <Text style={[styles.dateText, { color: MONTH_COLORS[monthData[0].s_year] }]}>
+              {monthData[0].month} {monthData[0].day}, {monthData[0].year} - {monthData[monthData.length - 1].month}{' '}
+              {monthData[monthData.length - 1].day}, {monthData[monthData.length - 1].year}
             </Text>
           </View>
           <View style={styles.directionWrapper}>
@@ -191,7 +201,7 @@ export default class MonthScreen extends React.Component {
               <Text>▶︎</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.calendarContainer}>
+          <View style={[styles.calendarContainer, { borderBottomColor: MONTH_COLORS[monthData[0].s_year] }]}>
             <View style={styles.weekDayContainer}>
               {WEEK_DAY_IMAGES.map((item, index) => (
                 <View key={index} style={styles.weekDayItem}>
@@ -237,8 +247,8 @@ export default class MonthScreen extends React.Component {
             <View style={styles.flexRow}>
               <Text style={styles.detailText}>{`${selectedDay ? "Today's" : "Months's"} Agenda`}</Text>
               {selectedDay && (
-                <TouchableOpacity onPress={() => this.setState({ selectedDay: null })}>
-                  <Text style={styles.detailText}>Show All Events</Text>
+                <TouchableOpacity style={styles.showAllButton} onPress={() => this.setState({ selectedDay: null })}>
+                  <Text style={styles.detailText}>Return to Monthly Agenda</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -319,15 +329,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 3,
     justifyContent: 'center',
   },
-  monthText: {
+  monthTextWrapper: {
     paddingLeft: 10,
+    flex: 1,
+    width: '60%',
+  },
+  monthText: {
     color: Colors.green,
     fontSize: 30,
     fontWeight: 'bold',
-    width: '60%',
     textTransform: 'uppercase',
-    flex: 1,
     textAlign: 'center',
+    fontFamily: 'TrajanPro-Bold',
   },
   monthImage: {
     height: 50,
@@ -335,7 +348,9 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 15,
+    fontWeight: 'bold',
     textTransform: 'uppercase',
+    textAlign: 'center',
   },
   detailText: {
     fontSize: 16,
@@ -480,5 +495,23 @@ const styles = StyleSheet.create({
   },
   arrowButton: {
     padding: 10,
+  },
+  headerTitleButton: {
+    borderWidth: 3,
+    borderBottomWidth: 3,
+    marginTop: 10,
+    borderRadius: 6,
+  },
+  showAllButton: {
+    shadowColor: 'black',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 5,
+    zIndex: 999,
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
   },
 });

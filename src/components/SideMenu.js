@@ -19,11 +19,11 @@ export const SideMenu = ({ navigation }) => (
         </TouchableOpacity> */}
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Month')}>
           <Image source={require('@app/assets/images/sidemenu_monthly.png')} />
-          <Text style={styles.menuText}>Dekan (Monthly)</Text>
+          <Text style={styles.menuText}>Monthly</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Main')}>
           <Image source={require('@app/assets/images/sidemenu_monthly.png')} />
-          <Text style={styles.menuText}>Medu (Yearly)</Text>
+          <Text style={styles.menuText}>Yearly</Text>
         </TouchableOpacity>
         <View style={styles.viewContainer}>
           <Text style={styles.titleText}>Reconnecting Back to Nature</Text>
@@ -55,10 +55,10 @@ export const SideMenu = ({ navigation }) => (
           <Image source={require('@app/assets/images/sidemenu_join.png')} />
           <Text style={styles.menuText}>Join us</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.closeDrawer()}>
+        {/* <TouchableOpacity style={styles.menuItem} onPress={() => navigation.closeDrawer()}>
           <Image source={require('@app/assets/images/sidemenu_setting.png')} />
           <Text style={styles.menuText}>Settings</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={styles.viewContainer}
           onPress={() => {

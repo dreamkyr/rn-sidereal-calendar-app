@@ -40,14 +40,14 @@ export default class HomeScreen extends React.Component {
     if (item.isSection) {
       return (
         <View style={[styles.itemContainer, styles.itemSection]}>
-          <Text style={styles.sectionYear}>{item.s_year}</Text>
+          <Text style={[styles.sectionYear, { color: MONTH_COLORS[item.s_year] }]}>{item.s_year}</Text>
         </View>
       );
     }
     return (
       <TouchableOpacity style={[styles.itemContainer, item.s_month === 'Nwt' && styles.noBottomBorder]} onPress={() => this.gotoMonthlyView(item)}>
         <View style={styles.monthContainer}>
-          <Text style={[styles.monthText, { color: MONTH_COLORS[item.s_month] }]}>{item.s_month}</Text>
+          <Text style={[styles.monthText, { color: MONTH_COLORS[item.s_year] }]}>{item.s_month}</Text>
           <Image style={styles.monthImage} resizeMode="contain" source={MONTH_NAMES[item.s_month]} />
         </View>
         <View style={styles.dateContainer}>
