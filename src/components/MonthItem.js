@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { TouchableOpacity, Image, StyleSheet, Text, View } from 'react-native';
 import moment from 'moment';
 import { DAY_IMAGES } from '@app/assets/images/days';
@@ -16,8 +16,13 @@ export const MonthItem = ({ selectedDay, onSelectDay, currentMonth, monthEvents 
     if (mEvents.includes(moment(`${month}/${day}/${year}`, 'MMMM/D/YYYY').dayOfYear())) {
       return true;
     }
+    if (sDayObject.holy_week || sDayObject.holy_year) {
+      return true;
+    }
     return false;
   };
+
+  const getSDay = (index) => getSDayObject(index, currentMonth.s_month, currentMonth.s_year) || {};
 
   return (
     <View style={[styles.weekDayContainer, styles.flexWrap]}>
@@ -32,6 +37,13 @@ export const MonthItem = ({ selectedDay, onSelectDay, currentMonth, monthEvents 
             source={DAY_IMAGES[item]}
           />
           <Text style={styles.dayText}>{item + 1}</Text>
+          {!!getSDay(item + 1).key && (
+            <Text style={styles.gDayText}>
+              {moment(`${getSDay(item + 1).month}/${getSDay(item + 1).day}/${getSDay(item + 1).year}`, 'MMMM/D/YYYY').format('MMM')}{' '}
+              {moment(`${getSDay(item + 1).month}/${getSDay(item + 1).day}/${getSDay(item + 1).year}`, 'MMMM/D/YYYY').format('D')}
+            </Text>
+          )}
+          {!getSDay(item + 1).key && <Text style={styles.gDayText}> </Text>}
         </TouchableOpacity>
       ))}
     </View>
@@ -90,6 +102,11 @@ const styles = StyleSheet.create({
   },
   dayText: {
     color: Colors.gray,
+  },
+  gDayText: {
+    color: Colors.gray,
+    fontSize: 8,
+    fontWeight: 'bold',
   },
   selectedItem: {
     backgroundColor: Colors.green,

@@ -65,6 +65,11 @@ export const getTodayMonthKey = () => {
   return false;
 };
 
+export const getSDayObjectFromGDay = (day, month, year) => {
+  console.log(day, month, year);
+  return data.find((item) => item.day === Number(day) && item.month === month && item.year === Number(year)) || {};
+};
+
 export const SMONTH_DATA = {
   Tehuti: {
     nickname: 'THOTH',
@@ -257,3 +262,39 @@ export const HELP_TEXT = [
       'You will find various holy days on the agenda view for each month, if you click on ??? you will find more information instructing you on how to observe the holy day.',
   },
 ];
+
+export const HOLY_DATA = {
+  Default: 'Normal Day',
+  "New Year's Day":
+    'The first of Tehuti is the first day of the Sidereal Calendar. Because the Earth does not rotate around the sun at a constant speed, measuring time based on this rotation gives an incorrect measurement. The Sidereal Calendar is based on the Sirius star and the Orion constellation and uses the exact cycle of the Heliacal rising as the basis for its time division. This makes it the only calendar that is astronomically correct. This day is well-indicated for spiritual initiations.',
+  'Day of Rest': 'Rest day',
+  'Ancestral Holy Day':
+    'On the fifth day of every dekan individuals do their ablutions (spiritual purification) and zemzem (daily spiritual activities) directing their wishes and food offerings to their dead relatives and Ancestors.',
+  'Divine Holy Day':
+    'On the ninth day of every dekan individuals do their ablutions (spiritual purification) and zemzem (daily spiritual activities) directing their wishes and incense offerings to their Ancestors who take them to the Divine World.  On this day public zemzem ceremonies are held at The Earth Center locations around the globe.',
+  'Fish Day':
+    'Fish day is the day everyone eats fish as a symbol of the equality of all humans in the eyes of Gods.  One is not to kill or eat land animals. Today one should eat fish and give it to family, friends, neighbors and passers-by.',
+  'Day of Tehuti':
+    'This is the most spiritual day for humanity. Today is the celebration of human moral and intellectual qualities.  This is the day humanity decided to make themselves different from other species through the quality of their civilization.  To celebrate, one eats fruit dipped in honey after repeating, “Maat is sweet, Maat is our light.  The truth is sweet, the truth is our path.  Justice is sweet, justice is our path.  Goodness is sweet, goodness is our path.”',
+  'Charm of Aishat':
+    'To protect her son Heru and to face the persecutions of Seth (the jealous God who killed her husband, Wsr), the Goddess Aishat (Isis) called on her magical powers.  This is the day people show their power and ability for good magic.  It is the most favorable day for invocations of  cosmic powers.',
+  'Sunstick Day':
+    'This is the day chosen for the celebration of the lowest sunlight.  This is the day that the Earth is most distant from the sun.  This is a period of carnivals, fire dances, and sun ceremonies.',
+  'Death of Wsr':
+    'Wsr is the God that dies every year to judge the dead.  He is the sovereign of the World of the Dead who resurrects every year for the redemption of humanity.  It is by copying this unique historic and spiritual principle that modern religions have based their prophets.  The death and resurrection of Wsr contains historic proof that dates over 35,000 years ago.  This is a day of mourning and one fasts today (no food, drink, smoking, sex, etc. from sunrise to sunset) while spending time for lamentation and prayers before breaking the fast.',
+  'Embalmment of Wsr':
+    'This day is celebrated with a night of prayer and lamentation. One is preparing for a period of fasting that comes in three days.',
+  'Beginning of Fasting (10 days)':
+    'One will not eat or drink, smoke or have sex etc. from sunrise to sunset for ten days.  The last day of fasting is Tepia 6th. This is a time for purification of the body and soul, and a time to remind ourselves that we have not forgotten the land of the dead.',
+  'Mourning For Wsr': 'This a day of mourning for Wsr - a day of prayers and lamentations.',
+  '(Last day of Fasting)': 'Last day of Fasting.',
+  'End of Fast Feast (all day)': 'Celebrate this morning with a feast!',
+  'Death of Master Naba':
+    'This is a day spent in mourning the death of Prophet Neb Naba. Members of The Earth Center worldwide come together to commemorate him with a group Zemzem (prayer and meditation ceremony) followed by breaking of the fast.',
+  'Birthday of Wsr': 'These are the birthdays of five Gods. They are celebrated with a festival that will precede the beginning of the year.',
+  'Birthday of Heru Ur': 'These are the birthdays of five Gods. They are celebrated with a festival that will precede the beginning of the year.',
+  'Birthday of Seth': 'These are the birthdays of five Gods. They are celebrated with a festival that will precede the beginning of the year.',
+  'Birthday of Aishat': 'These are the birthdays of five Gods. They are celebrated with a festival that will precede the beginning of the year.',
+  'Birthday of Nebfest': 'These are the birthdays of five Gods. They are celebrated with a festival that will precede the beginning of the year.',
+  'World Renewal Day': 'Only occurs once every 4 years(an added "6th" day to the month of NWT, our leap year)',
+};

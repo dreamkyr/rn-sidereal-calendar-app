@@ -7,7 +7,8 @@ import MonthScreen from './month';
 import NewScreen from './new';
 import DetailScreen from './detail';
 import AlertScreen from './alert';
-import HelpScreen from '../help';
+import HelpScreen from './help';
+import HolyDetailScreen from './holyDetail';
 import { SidemenuButton, SidemenuAdd } from '@app/components';
 
 const Stack = createStackNavigator();
@@ -55,6 +56,7 @@ export default function HomeNavigator({ navigation }) {
       <Stack.Screen name="Detail" component={DetailScreen} options={{ headerBackTitleVisible: false, headerTintColor: 'white' }} />
       <Stack.Screen name="Alert" component={AlertScreen} options={{ headerBackTitleVisible: false, headerTintColor: 'white' }} />
       <Stack.Screen name="Help" component={HelpScreen} options={{ headerBackTitleVisible: false, headerTintColor: 'white' }} />
+      <Stack.Screen name="HolyDetail" component={HolyDetailScreen} options={{ headerBackTitleVisible: false, headerTintColor: 'white' }} />
     </Stack.Navigator>
   );
 }

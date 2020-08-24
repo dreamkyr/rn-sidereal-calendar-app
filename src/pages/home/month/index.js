@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import { SidemenuAdd, MonthItem } from '@app/components';
 import { Colors, SCREEN_WIDTH, MONTH_COLORS } from '@app/helper';
-import { getSMonthList, getMonthByName, SMONTH_DATA, getSDayObject } from '@app/helper/data';
+import { getSMonthList, getMonthByName, SMONTH_DATA, getSDayObject, getSDayObjectFromGDay, HOLY_DATA } from '@app/helper/data';
 import { MONTH_NAMES } from '@app/assets/images/monthNames';
 import { WEEK_DAY_IMAGES } from '@app/assets/images/weekDays';
 import { DAY_IMAGES } from '@app/assets/images/days';
@@ -40,7 +40,6 @@ export default class MonthScreen extends React.Component {
       monthData: getMonthByName(item.s_month, item.s_year),
       currentMonth: item,
     });
-    // this.fetchMonthEvents(item);
   }
 
   componentDidUpdate(prevProps) {
@@ -160,6 +159,10 @@ export default class MonthScreen extends React.Component {
     // console.log(getTodayMonthKey());
   };
 
+  gotoHolyDetailView = (key) => {
+    this.props.navigation.navigate('HolyDetail', { holy_key: key });
+  };
+
   render() {
     const { monthData, selectedDay, currentMonth, events, monthEvents } = this.state;
     if (monthData.length === 0) {
@@ -180,7 +183,9 @@ export default class MonthScreen extends React.Component {
             onPress={this.goToDetail}>
             <View style={styles.monthTextWrapper}>
               <Text style={[styles.monthText, { color: MONTH_COLORS[monthData[0].s_year] }]}>{monthData[0].s_month}</Text>
-              <Text style={[styles.dateText, { color: MONTH_COLORS[monthData[0].s_year] }]}>({SMONTH_DATA[monthData[0].s_month].nickname})</Text>
+              <Text style={[styles.dateText, styles.customFont, { color: MONTH_COLORS[monthData[0].s_year] }]}>
+                ({SMONTH_DATA[monthData[0].s_month].nickname})
+              </Text>
             </View>
             <Image style={styles.monthImage} resizeMode="contain" source={MONTH_NAMES[monthData[0].s_month]} />
           </TouchableOpacity>
@@ -235,10 +240,25 @@ export default class MonthScreen extends React.Component {
                   <Image resizeMode="contain" style={styles.detailImage} source={DAY_IMAGES[(selectedDay - 1) % 10]} />
                 </View>
                 <View style={styles.detailTextContainer}>
-                  <Text style={styles.detailTitleText}>{sDayObject.holy_year || sDayObject.holy_week || 'Normal'}</Text>
+                  <View style={styles.holyWrapper}>
+                    {sDayObject && !!sDayObject.holy_year && (
+                      <TouchableOpacity style={styles.holyTitleWrapper} onPress={() => this.gotoHolyDetailView(sDayObject.holy_year)}>
+                        <Text style={[styles.detailTitleText, styles.holyTitle]}>{sDayObject.holy_year || ''}</Text>
+                      </TouchableOpacity>
+                    )}
+                    {sDayObject && !!sDayObject.holy_week && !!sDayObject.holy_year && <Text style={styles.detailTitleText}> </Text>}
+                    {sDayObject && !!sDayObject.holy_week && (
+                      <TouchableOpacity style={styles.holyTitleWrapper} onPress={() => this.gotoHolyDetailView(sDayObject.holy_week)}>
+                        <Text style={[styles.detailTitleText, styles.holyTitle]}>{sDayObject.holy_week || ''}</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                  {sDayObject && !sDayObject.holy_week && !sDayObject.holy_year && <Text style={styles.detailTitleText}>Normal</Text>}
                   <Text>Dekan week: {sDayObject.dekan_day}</Text>
                   <Text>Neteru: {sDayObject.neteru_week}</Text>
-                  <Text>{`${sDayObject.weekday || ''} ${sDayObject.month || ''} ${sDayObject.day || ''}`}</Text>
+                  <Text>
+                    {`${sDayObject.weekday || ''} ${sDayObject.month || ''} ${sDayObject.day || ''}`} ({sDayObject.s_month || ''} {sDayObject.s_day})
+                  </Text>
                 </View>
               </View>
             </View>
@@ -259,16 +279,20 @@ export default class MonthScreen extends React.Component {
                     if (event.allDay) {
                       return (
                         <View key={event.id} style={styles.eventItemContainer}>
-                          <Text style={styles.eventTime}>All-day</Text>
+                          <View style={styles.eventTimeWrapper}>
+                            <Text style={styles.eventTime}>All-day</Text>
+                          </View>
                           <Text style={styles.eventTitle}>{event.title}</Text>
                         </View>
                       );
                     }
                     return (
                       <View key={event.id} style={[styles.eventItemContainer, styles.eventNoBorder]}>
-                        <Text style={styles.eventTime}>
-                          {moment(event.startDate).format('HH:mm')} - {moment(event.endDate).format('HH:mm')}
-                        </Text>
+                        <View style={styles.eventTimeWrapper}>
+                          <Text style={styles.eventTime}>
+                            {moment(event.startDate).format('HH:mm')} - {moment(event.endDate).format('HH:mm')}
+                          </Text>
+                        </View>
                         <Text style={styles.eventTitle}>{event.title}</Text>
                       </View>
                     );
@@ -279,19 +303,34 @@ export default class MonthScreen extends React.Component {
               {!selectedDay && (
                 <View style={styles.eventListContainer}>
                   {monthEvents.map((event) => {
+                    const sDayFromGday = getSDayObjectFromGDay(
+                      moment(event.startDate).format('D'),
+                      moment(event.startDate).format('MMMM'),
+                      moment(event.startDate).format('YYYY'),
+                    );
                     if (event.allDay) {
                       return (
                         <View key={event.id} style={[styles.eventItemContainer, styles.eventNoBorder]}>
-                          <Text style={styles.eventTime}>{`All-day ${moment(event.startDate).format('MMM D')}`}</Text>
+                          <View style={styles.eventTimeWrapper}>
+                            <Text style={styles.eventTime}>{`All-day ${moment(event.startDate).format('MMM D')}`}</Text>
+                            <Text style={[styles.eventTime, styles.eventSDayTime]}>
+                              {sDayFromGday.s_month} {sDayFromGday.s_day}
+                            </Text>
+                          </View>
                           <Text style={styles.eventTitle}>{event.title}</Text>
                         </View>
                       );
                     }
                     return (
                       <View key={event.id} style={[styles.eventItemContainer, styles.eventNoBorder]}>
-                        <Text style={styles.eventTime}>
-                          {moment(event.startDate).format('HH:mm')} - {moment(event.endDate).format('HH:mm MMMM D')}
-                        </Text>
+                        <View style={styles.eventTimeWrapper}>
+                          <Text style={styles.eventTime}>
+                            {moment(event.startDate).format('HH:mm')} - {moment(event.endDate).format('HH:mm MMMM D')}
+                          </Text>
+                          <Text style={[styles.eventTime, styles.eventSDayTime]}>
+                            {sDayFromGday.s_month} {sDayFromGday.s_day}
+                          </Text>
+                        </View>
                         <Text style={styles.eventTitle}>{event.title.trim()}</Text>
                       </View>
                     );
@@ -339,6 +378,11 @@ const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: 'center',
     fontFamily: 'TrajanPro-Bold',
+  },
+  customFont: {
+    fontFamily: 'TrajanPro-Bold',
+    textTransform: 'none',
+    fontWeight: 'normal',
   },
   monthImage: {
     height: 50,
@@ -453,7 +497,6 @@ const styles = StyleSheet.create({
   detailTitleText: {
     fontSize: 18,
     fontWeight: '400',
-    marginBottom: 8,
   },
   eventListContainer: {
     width: '100%',
@@ -471,9 +514,14 @@ const styles = StyleSheet.create({
   eventNoBorder: {
     borderBottomWidth: 0,
   },
+  eventTimeWrapper: {
+    flex: 0.3,
+  },
   eventTime: {
     color: Colors.green,
-    flex: 0.3,
+  },
+  eventSDayTime: {
+    color: Colors.main,
   },
   eventTitle: {
     color: Colors.black,
@@ -511,5 +559,22 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 10,
     paddingVertical: 2,
+  },
+  holyWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  holyTitleWrapper: {
+    borderWidth: 1,
+    borderColor: Colors.gray,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.green,
+  },
+  holyTitle: {
+    color: Colors.white,
   },
 });

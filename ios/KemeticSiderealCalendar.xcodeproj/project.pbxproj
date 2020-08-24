@@ -15,12 +15,12 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* KemeticSiderealCalendarTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* KemeticSiderealCalendarTests.m */; };
+		2ED72807C23D46A3823CC4DD /* TrajanPro-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9B08008F6AC4B4686E110AE /* TrajanPro-Bold.ttf */; };
 		4C89887C847922F3FF086031 /* libPods-KemeticSiderealCalendar.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D42023A9E6DAF9D2D9BBF9 /* libPods-KemeticSiderealCalendar.a */; };
 		529C987777001FF7C3C1D9D3 /* libPods-KemeticSiderealCalendar-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91BF86FF40DDB59B6092A268 /* libPods-KemeticSiderealCalendar-tvOSTests.a */; };
 		6009470A2F166C7F9CE6FEC4 /* libPods-KemeticSiderealCalendar-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EAA47CB1185B170FBF7553C1 /* libPods-KemeticSiderealCalendar-tvOS.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		99425FB96BC355DFCF6ECE97 /* libPods-KemeticSiderealCalendar-KemeticSiderealCalendarTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51B46BE1317F456926752764 /* libPods-KemeticSiderealCalendar-KemeticSiderealCalendarTests.a */; };
-		2ED72807C23D46A3823CC4DD /* TrajanPro-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9B08008F6AC4B4686E110AE /* TrajanPro-Bold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,8 +67,8 @@
 		EEF4A81DF286BF25F49F5A74 /* Pods-KemeticSiderealCalendar.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KemeticSiderealCalendar.release.xcconfig"; path = "Target Support Files/Pods-KemeticSiderealCalendar/Pods-KemeticSiderealCalendar.release.xcconfig"; sourceTree = "<group>"; };
 		EFA8054E43B8161A1AAC6EB6 /* Pods-KemeticSiderealCalendar-KemeticSiderealCalendarTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KemeticSiderealCalendar-KemeticSiderealCalendarTests.release.xcconfig"; path = "Target Support Files/Pods-KemeticSiderealCalendar-KemeticSiderealCalendarTests/Pods-KemeticSiderealCalendar-KemeticSiderealCalendarTests.release.xcconfig"; sourceTree = "<group>"; };
 		F6E62C5ED02535ED29CBD1E1 /* Pods-KemeticSiderealCalendar-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KemeticSiderealCalendar-tvOS.release.xcconfig"; path = "Target Support Files/Pods-KemeticSiderealCalendar-tvOS/Pods-KemeticSiderealCalendar-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		F9B08008F6AC4B4686E110AE /* TrajanPro-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TrajanPro-Bold.ttf"; path = "../src/assets/fonts/TrajanPro-Bold.ttf"; sourceTree = "<group>"; };
 		FB62CB97076817651BC39270 /* Pods-KemeticSiderealCalendar-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KemeticSiderealCalendar-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-KemeticSiderealCalendar-tvOSTests/Pods-KemeticSiderealCalendar-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		F9B08008F6AC4B4686E110AE /* TrajanPro-Bold.ttf */ = {isa = PBXFileReference; name = "TrajanPro-Bold.ttf"; path = "../src/assets/fonts/TrajanPro-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +122,14 @@
 				00E356F11AD99517003FC87E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0D211922E4D74371BF7CDC52 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F9B08008F6AC4B4686E110AE /* TrajanPro-Bold.ttf */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		13B07FAE1A68108700A75B9A /* KemeticSiderealCalendar */ = {
@@ -199,15 +207,6 @@
 			);
 			name = Products;
 			sourceTree = "<group>";
-		};
-		0D211922E4D74371BF7CDC52 /* Resources */ = {
-			isa = "PBXGroup";
-			children = (
-				F9B08008F6AC4B4686E110AE /* TrajanPro-Bold.ttf */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 
@@ -671,7 +670,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = KD8D5SHT5J;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = KemeticSiderealCalendar/Info.plist;
@@ -698,7 +697,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = KD8D5SHT5J;
 				INFOPLIST_FILE = KemeticSiderealCalendar/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
