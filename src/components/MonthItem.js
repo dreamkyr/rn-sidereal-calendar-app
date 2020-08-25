@@ -2,8 +2,8 @@ import React from 'react';
 import { TouchableOpacity, Image, StyleSheet, Text, View } from 'react-native';
 import moment from 'moment';
 import { DAY_IMAGES } from '@app/assets/images/days';
-import { Colors, SCREEN_WIDTH } from '@app/helper';
-import { getSDayObject } from '@app/helper/data';
+import { Colors, SCREEN_WIDTH, HOLY_COLOR } from '@app/helper';
+import { getSDayObject, HOLY_DATA } from '@app/helper/data';
 
 export const MonthItem = ({ selectedDay, onSelectDay, currentMonth, monthEvents }) => {
   const hasEvent = (index) => {
@@ -24,12 +24,28 @@ export const MonthItem = ({ selectedDay, onSelectDay, currentMonth, monthEvents 
 
   const getSDay = (index) => getSDayObject(index, currentMonth.s_month, currentMonth.s_year) || {};
 
+  const getHolidayColor = (index) => {
+    const sDay = getSDay(index);
+    if (sDay.holy_week) {
+      return sDay.holy_week;
+    }
+    if (sDay.holy_year) {
+      return 'Holy Year Day';
+    }
+    return false;
+  };
+
   return (
     <View style={[styles.weekDayContainer, styles.flexWrap]}>
       {[...Array(30).keys()].map((item) => (
         <TouchableOpacity
           key={item}
-          style={[styles.dayItem, hasEvent(item + 1) && styles.hasEventItem, selectedDay === item + 1 && styles.selectedItem]}
+          style={[
+            styles.dayItem,
+            hasEvent(item + 1) && styles.hasEventItem,
+            selectedDay === item + 1 && styles.selectedItem,
+            getHolidayColor(item + 1) && { borderColor: HOLY_COLOR[getHolidayColor(item + 1)] },
+          ]}
           onPress={() => onSelectDay(item + 1)}>
           <Image
             style={[styles.dayImage, item >= 10 && { height: 15 * 2 }, item >= 20 && { height: 15 * 3 }]}
@@ -110,10 +126,11 @@ const styles = StyleSheet.create({
   },
   selectedItem: {
     backgroundColor: Colors.green,
-    borderRadius: 15,
+    borderRadius: 6,
   },
   hasEventItem: {
-    backgroundColor: Colors.lightgreen,
-    borderRadius: 15,
+    borderColor: Colors.lightgreen,
+    borderWidth: 2,
+    borderRadius: 6,
   },
 });

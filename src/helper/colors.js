@@ -16,3 +16,10 @@ export const MONTH_COLORS = {
   422: '#276665',
   423: '#C16436',
 };
+
+export const HOLY_COLOR = {
+  'Day of Rest': '#7E2B2E',
+  'Ancestral Holy Day': '#276665',
+  'Divine Holy Day': '#dad51c',
+  'Holy Year Day': '#63B8BD',
+};

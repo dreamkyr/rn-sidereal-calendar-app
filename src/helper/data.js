@@ -66,7 +66,6 @@ export const getTodayMonthKey = () => {
 };
 
 export const getSDayObjectFromGDay = (day, month, year) => {
-  console.log(day, month, year);
   return data.find((item) => item.day === Number(day) && item.month === month && item.year === Number(year)) || {};
 };
 

@@ -45,6 +45,7 @@ export default class MonthScreen extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.route.params?.eventId !== this.props.route.params?.eventId) {
       this.onSelectDay(this.state.selectedDay);
+      this.fetchEvents(this.state.currentMonth);
     }
   }
 
@@ -71,7 +72,12 @@ export default class MonthScreen extends React.Component {
       if (result.length > 0) {
         const cIds = result.map((item) => item.id);
         RNCalendarEvents.fetchAllEvents(startDate, endDate, cIds).then((res) => {
-          this.setState({ events: _.sortBy(res, (item) => !item.allDay) });
+          this.setState({
+            events: _.sortBy(
+              _.sortBy(res, (item) => !item.allDay),
+              (eItem) => eItem.startDate,
+            ),
+          });
         });
       }
     });
@@ -237,7 +243,11 @@ export default class MonthScreen extends React.Component {
               <Text style={styles.detailText}>Dekan Details</Text>
               <View style={styles.detailContainer}>
                 <View style={styles.detailImageContainer}>
-                  <Image resizeMode="contain" style={styles.detailImage} source={DAY_IMAGES[(selectedDay - 1) % 10]} />
+                  <Image
+                    style={[styles.detailImage, selectedDay >= 10 && { height: 15 * 2 }, selectedDay >= 20 && { height: 15 * 3 }]}
+                    resizeMode="contain"
+                    source={DAY_IMAGES[selectedDay - 1]}
+                  />
                 </View>
                 <View style={styles.detailTextContainer}>
                   <View style={styles.holyWrapper}>
@@ -253,7 +263,6 @@ export default class MonthScreen extends React.Component {
                       </TouchableOpacity>
                     )}
                   </View>
-                  {sDayObject && !sDayObject.holy_week && !sDayObject.holy_year && <Text style={styles.detailTitleText}>Normal</Text>}
                   <Text>Dekan week: {sDayObject.dekan_day}</Text>
                   <Text>Neteru: {sDayObject.neteru_week}</Text>
                   <Text>
@@ -290,7 +299,7 @@ export default class MonthScreen extends React.Component {
                       <View key={event.id} style={[styles.eventItemContainer, styles.eventNoBorder]}>
                         <View style={styles.eventTimeWrapper}>
                           <Text style={styles.eventTime}>
-                            {moment(event.startDate).format('HH:mm')} - {moment(event.endDate).format('HH:mm')}
+                            {moment(event.startDate).format('HH:mm A')} - {moment(event.endDate).format('HH:mm A')}
                           </Text>
                         </View>
                         <Text style={styles.eventTitle}>{event.title}</Text>
@@ -325,7 +334,7 @@ export default class MonthScreen extends React.Component {
                       <View key={event.id} style={[styles.eventItemContainer, styles.eventNoBorder]}>
                         <View style={styles.eventTimeWrapper}>
                           <Text style={styles.eventTime}>
-                            {moment(event.startDate).format('HH:mm')} - {moment(event.endDate).format('HH:mm MMMM D')}
+                            {moment(event.startDate).format('HH:mm A')} - {moment(event.endDate).format('HH:mm A MMMM D')}
                           </Text>
                           <Text style={[styles.eventTime, styles.eventSDayTime]}>
                             {sDayFromGday.s_month} {sDayFromGday.s_day}
