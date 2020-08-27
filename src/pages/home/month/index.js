@@ -45,7 +45,7 @@ export default class MonthScreen extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.route.params?.eventId !== this.props.route.params?.eventId) {
       this.onSelectDay(this.state.selectedDay);
-      this.fetchEvents(this.state.currentMonth);
+      this.fetchMonthEvents(this.state.currentMonth);
     }
   }
 

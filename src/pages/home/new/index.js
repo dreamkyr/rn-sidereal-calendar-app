@@ -88,14 +88,16 @@ export default class AddEvent extends React.Component {
 
   onChangeStartDate = (date) => {
     this.setState({
-      startDate: moment(date).toDate(),
+      startDate: date,
       endDate: moment(date).add(1, 'hours'),
+      showStartPicker: Platform.OS === 'ios',
     });
   };
 
   onChangeEndDate = (date) => {
     this.setState({
       endDate: moment(date).toDate(),
+      showEndPicker: Platform.OS === 'ios',
     });
   };
 

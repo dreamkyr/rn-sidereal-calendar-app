@@ -8,6 +8,7 @@ export const Colors = {
   gray: 'gray',
   lightpink: '#7E2B2E3A',
   red: 'red',
+  event: '#63B8BD',
 };
 
 export const MONTH_COLORS = {
@@ -18,8 +19,9 @@ export const MONTH_COLORS = {
 };
 
 export const HOLY_COLOR = {
-  'Day of Rest': '#7E2B2E',
-  'Ancestral Holy Day': '#276665',
-  'Divine Holy Day': '#dad51c',
+  'Day of Rest': '#7E2B2E3A',
+  'Ancestral Holy Day': '#C16436',
+  'Divine Holy Day': '#63B8BD',
   'Holy Year Day': '#63B8BD',
+  'Multi Events': '#63B8BD',
 };

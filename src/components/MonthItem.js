@@ -26,6 +26,9 @@ export const MonthItem = ({ selectedDay, onSelectDay, currentMonth, monthEvents 
 
   const getHolidayColor = (index) => {
     const sDay = getSDay(index);
+    if (sDay.holy_week && sDay.holy_year && hasEvent(index)) {
+      return 'Multi Events';
+    }
     if (sDay.holy_week) {
       return sDay.holy_week;
     }
@@ -34,34 +37,38 @@ export const MonthItem = ({ selectedDay, onSelectDay, currentMonth, monthEvents 
     }
     return false;
   };
-
   return (
     <View style={[styles.weekDayContainer, styles.flexWrap]}>
-      {[...Array(30).keys()].map((item) => (
-        <TouchableOpacity
-          key={item}
-          style={[
-            styles.dayItem,
-            hasEvent(item + 1) && styles.hasEventItem,
-            selectedDay === item + 1 && styles.selectedItem,
-            getHolidayColor(item + 1) && { borderColor: HOLY_COLOR[getHolidayColor(item + 1)] },
-          ]}
-          onPress={() => onSelectDay(item + 1)}>
-          <Image
-            style={[styles.dayImage, item >= 10 && { height: 15 * 2 }, item >= 20 && { height: 15 * 3 }]}
-            resizeMode="contain"
-            source={DAY_IMAGES[item]}
-          />
-          <Text style={styles.dayText}>{item + 1}</Text>
-          {!!getSDay(item + 1).key && (
-            <Text style={styles.gDayText}>
-              {moment(`${getSDay(item + 1).month}/${getSDay(item + 1).day}/${getSDay(item + 1).year}`, 'MMMM/D/YYYY').format('MMM')}{' '}
-              {moment(`${getSDay(item + 1).month}/${getSDay(item + 1).day}/${getSDay(item + 1).year}`, 'MMMM/D/YYYY').format('D')}
-            </Text>
-          )}
-          {!getSDay(item + 1).key && <Text style={styles.gDayText}> </Text>}
-        </TouchableOpacity>
-      ))}
+      {[...Array(30).keys()].map((item) => {
+        if (!getSDay(item + 1).key && getSDay(item + 1).key !== 0) {
+          return <View key={item} style={styles.dayItem} />;
+        }
+        return (
+          <TouchableOpacity
+            key={item}
+            style={[
+              styles.dayItem,
+              hasEvent(item + 1) && styles.hasEventItem,
+              selectedDay === item + 1 && styles.selectedItem,
+              getHolidayColor(item + 1) && { borderColor: HOLY_COLOR[getHolidayColor(item + 1)] },
+            ]}
+            onPress={() => onSelectDay(item + 1)}>
+            <Image
+              style={[styles.dayImage, item >= 10 && { height: 15 * 2 }, item >= 20 && { height: 15 * 3 }]}
+              resizeMode="contain"
+              source={DAY_IMAGES[item]}
+            />
+            <Text style={styles.dayText}>{item + 1}</Text>
+            {(!!getSDay(item + 1).key || getSDay(item + 1).key === 0) && (
+              <Text style={styles.gDayText}>
+                {moment(`${getSDay(item + 1).month}/${getSDay(item + 1).day}/${getSDay(item + 1).year}`, 'MMMM/D/YYYY').format('MMM')}{' '}
+                {moment(`${getSDay(item + 1).month}/${getSDay(item + 1).day}/${getSDay(item + 1).year}`, 'MMMM/D/YYYY').format('D')}
+              </Text>
+            )}
+            {!getSDay(item + 1).key && getSDay(item + 1).key !== 0 && <Text style={styles.gDayText}> </Text>}
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };
@@ -129,7 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   hasEventItem: {
-    borderColor: Colors.lightgreen,
+    borderColor: Colors.event,
     borderWidth: 2,
     borderRadius: 6,
   },
