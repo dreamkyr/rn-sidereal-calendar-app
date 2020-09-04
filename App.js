@@ -6,12 +6,12 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import 'react-native-gesture-handler';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import * as RNIap from 'react-native-iap';
 import SplashScreen from '@app/pages/splash';
-import AppContainer from '@app/pages/mainNavigator';
-import { Colors } from '@app/helper';
+import { Colors, IAP_SKUS, syncPurchasedFromStorage, syncShownPaidWelcome, removePurchasedFromStorage, removeShownPaidWelcome } from '@app/helper';
 
 const Theme = {
   ...DefaultTheme,
@@ -30,10 +30,21 @@ class App extends React.Component {
     };
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.setState({ loading: false });
-    }, 1000);
+  async componentDidMount() {
+    try {
+      // await removePurchasedFromStorage();
+      // await removeShownPaidWelcome();
+      await RNIap.clearTransactionIOS();
+      await RNIap.initConnection();
+      await RNIap.getProducts(IAP_SKUS);
+      await syncPurchasedFromStorage();
+      await syncShownPaidWelcome();
+      setTimeout(() => {
+        this.setState({ loading: false });
+      }, 1000);
+    } catch (err) {
+      console.warn(err); // standardized err.code and err.message available
+    }
   }
 
   render() {
@@ -41,10 +52,13 @@ class App extends React.Component {
     if (loading) {
       return <SplashScreen />;
     } else {
+      const AppCompnent = React.lazy(() => import('./src/pages/mainNavigator'));
       return (
-        <NavigationContainer theme={Theme}>
-          <AppContainer />
-        </NavigationContainer>
+        <Suspense fallback={<SplashScreen />}>
+          <NavigationContainer theme={Theme}>
+            <AppCompnent />
+          </NavigationContainer>
+        </Suspense>
       );
     }
   }

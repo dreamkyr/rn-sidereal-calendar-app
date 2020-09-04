@@ -1,16 +1,41 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image } from 'react-native';
-import { Colors, SCREEN_WIDTH, MONTH_COLORS } from '@app/helper';
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image, DevSettings } from 'react-native';
+
+import {
+  Colors,
+  SCREEN_WIDTH,
+  MONTH_COLORS,
+  isPaidVersion,
+  showUpgradeDialog,
+  isVisitedPaidWelcome,
+  requestPurchase,
+  savePurchasedOnStorage,
+  saveShownPaidWelcome,
+} from '@app/helper';
 import { getSMonthList, SMONTH_DATA } from '@app/helper/data';
 import { FlatList } from 'react-native-gesture-handler';
 import { MONTH_NAMES } from '@app/assets/images/monthNames';
+import StartupModal from '@app/components/StartupModal';
+import LoadingView from '@app/components/LoadingView';
 
-const monthList = getSMonthList();
 export default class HomeScreen extends React.Component {
   constructor() {
     super();
+    this.state = {
+      showWelcome: false,
+      loading: false,
+    };
+    this.monthList = getSMonthList();
     this.visible_year = 420;
     this.viewabilityConfig = { viewAreaCoveragePercentThreshold: 5 };
+  }
+
+  componentDidMount() {
+    if (!isPaidVersion() || (isPaidVersion() && !isVisitedPaidWelcome())) {
+      setTimeout(() => {
+        this.setState({ showWelcome: true });
+      }, 1000);
+    }
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -59,19 +84,53 @@ export default class HomeScreen extends React.Component {
     );
   };
 
+  onPressUnlock = async () => {
+    if (await showUpgradeDialog()) {
+      this.setState({ loading: true });
+      const result = await requestPurchase();
+      if (result) {
+        await savePurchasedOnStorage();
+        DevSettings.reload();
+      }
+      this.setState({ loading: false });
+    }
+  };
+
+  closeWelcome = async () => {
+    if (isPaidVersion()) {
+      await saveShownPaidWelcome();
+    }
+    this.setState({ showWelcome: false });
+  };
+
+  onUpgradeFromModal = () => {
+    this.setState({ showWelcome: false });
+    setTimeout(() => {
+      this.onPressUnlock();
+    }, 1000);
+  };
+
   render() {
+    const { showWelcome } = this.state;
     return (
       <View style={styles.container}>
         <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
+        {!isPaidVersion() && (
+          <TouchableOpacity style={styles.purchaseWrapper} onPress={this.onPressUnlock}>
+            <Text style={styles.purchaseText}>Unlock additional calendar features</Text>
+          </TouchableOpacity>
+        )}
         <FlatList
           style={styles.listContainer}
           contentContainerStyle={styles.listContentStyle}
-          data={monthList}
+          data={this.monthList}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => this.renderItem(item)}
           viewabilityConfig={this.viewabilityConfig}
-          onViewableItemsChanged={({ viewableItems }) => this.updateTitle(viewableItems[0])}
+          // onViewableItemsChanged={({ viewableItems }) => this.updateTitle(viewableItems[0])}
         />
+        <StartupModal visible={showWelcome} onExit={this.closeWelcome} onUpgrade={this.onUpgradeFromModal} />
+        <LoadingView visible={this.state.loading} />
       </View>
     );
   }
@@ -82,7 +141,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   listContentStyle: {
-    paddingBottom: 50,
+    paddingBottom: 80,
     // paddingHorizontal: 10,
   },
   itemContainer: {
@@ -129,5 +188,19 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: Colors.red,
     fontWeight: 'bold',
+  },
+  purchaseWrapper: {
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: Colors.main,
+    margin: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  purchaseText: {
+    fontSize: 18,
+    color: Colors.main,
+    fontWeight: 'bold',
+    paddingVertical: 20,
   },
 });

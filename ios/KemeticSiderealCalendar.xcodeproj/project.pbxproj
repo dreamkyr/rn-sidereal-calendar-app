@@ -21,6 +21,7 @@
 		6009470A2F166C7F9CE6FEC4 /* libPods-KemeticSiderealCalendar-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EAA47CB1185B170FBF7553C1 /* libPods-KemeticSiderealCalendar-tvOS.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		99425FB96BC355DFCF6ECE97 /* libPods-KemeticSiderealCalendar-KemeticSiderealCalendarTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51B46BE1317F456926752764 /* libPods-KemeticSiderealCalendar-KemeticSiderealCalendarTests.a */; };
+		C952566B2501CFC5006F98F4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C952566A2501CFC5006F98F4 /* StoreKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = KemeticSiderealCalendar/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		91BF86FF40DDB59B6092A268 /* libPods-KemeticSiderealCalendar-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KemeticSiderealCalendar-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4D42023A9E6DAF9D2D9BBF9 /* libPods-KemeticSiderealCalendar.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KemeticSiderealCalendar.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C952566A2501CFC5006F98F4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		DDF2DA944C78688064905531 /* Pods-KemeticSiderealCalendar-KemeticSiderealCalendarTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KemeticSiderealCalendar-KemeticSiderealCalendarTests.debug.xcconfig"; path = "Target Support Files/Pods-KemeticSiderealCalendar-KemeticSiderealCalendarTests/Pods-KemeticSiderealCalendar-KemeticSiderealCalendarTests.debug.xcconfig"; sourceTree = "<group>"; };
 		EAA47CB1185B170FBF7553C1 /* libPods-KemeticSiderealCalendar-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KemeticSiderealCalendar-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -85,6 +87,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C89887C847922F3FF086031 /* libPods-KemeticSiderealCalendar.a in Frameworks */,
+				C952566B2501CFC5006F98F4 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,6 +152,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C952566A2501CFC5006F98F4 /* StoreKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				C4D42023A9E6DAF9D2D9BBF9 /* libPods-KemeticSiderealCalendar.a */,
@@ -670,7 +674,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = KD8D5SHT5J;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = KemeticSiderealCalendar/Info.plist;
@@ -697,7 +701,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = KD8D5SHT5J;
 				INFOPLIST_FILE = KemeticSiderealCalendar/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

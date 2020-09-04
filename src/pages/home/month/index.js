@@ -1,15 +1,16 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image, ScrollView, Alert, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image, ScrollView, Alert, FlatList, DevSettings } from 'react-native';
 import RNCalendarEvents from 'react-native-calendar-events';
 import moment from 'moment';
 import _ from 'lodash';
 
 import { SidemenuAdd, MonthItem } from '@app/components';
-import { Colors, SCREEN_WIDTH, MONTH_COLORS } from '@app/helper';
+import { Colors, SCREEN_WIDTH, MONTH_COLORS, isPaidVersion, showUpgradeDialog, requestPurchase, savePurchasedOnStorage } from '@app/helper';
 import { getSMonthList, getMonthByName, SMONTH_DATA, getSDayObject, getSDayObjectFromGDay, HOLY_DATA } from '@app/helper/data';
 import { MONTH_NAMES } from '@app/assets/images/monthNames';
 import { WEEK_DAY_IMAGES } from '@app/assets/images/weekDays';
 import { DAY_IMAGES } from '@app/assets/images/days';
+import LoadingView from '@app/components/LoadingView';
 
 const monthList = getSMonthList().filter((item) => !item.isSection);
 export default class MonthScreen extends React.Component {
@@ -22,6 +23,7 @@ export default class MonthScreen extends React.Component {
       events: [],
       monthEvents: [],
       currentIndex: null,
+      loading: false,
     };
     this.viewabilityConfig = { viewAreaCoveragePercentThreshold: 50 };
     this.flatListRef = null;
@@ -50,6 +52,9 @@ export default class MonthScreen extends React.Component {
   }
 
   fetchMonthEvents = (item) => {
+    if (!isPaidVersion()) {
+      return;
+    }
     RNCalendarEvents.checkPermissions().then((result) => {
       if (result !== 'authorized') {
         RNCalendarEvents.requestPermissions();
@@ -68,6 +73,9 @@ export default class MonthScreen extends React.Component {
   };
 
   fetchEvents = (startDate, endDate) => {
+    if (!isPaidVersion()) {
+      return;
+    }
     RNCalendarEvents.findCalendars().then((result) => {
       if (result.length > 0) {
         const cIds = result.map((item) => item.id);
@@ -96,6 +104,10 @@ export default class MonthScreen extends React.Component {
   };
 
   goToDetail = () => {
+    if (!isPaidVersion()) {
+      this.onPressUnlock();
+      return;
+    }
     this.props.navigation.navigate('Detail', { selectedMonth: this.state.currentMonth });
   };
 
@@ -114,6 +126,10 @@ export default class MonthScreen extends React.Component {
   };
 
   addEvent = () => {
+    if (!isPaidVersion()) {
+      this.onPressUnlock();
+      return;
+    }
     const { currentMonth, selectedDay } = this.state;
     const sDayObject = getSDayObject(selectedDay, currentMonth.s_month, currentMonth.s_year) || {};
     const { year, month, day } = sDayObject;
@@ -166,11 +182,27 @@ export default class MonthScreen extends React.Component {
   };
 
   gotoHolyDetailView = (key) => {
+    if (!isPaidVersion()) {
+      this.onPressUnlock();
+      return;
+    }
     this.props.navigation.navigate('HolyDetail', { holy_key: key });
   };
 
+  onPressUnlock = async () => {
+    if (await showUpgradeDialog()) {
+      this.setState({ loading: true });
+      const result = await requestPurchase();
+      if (result) {
+        await savePurchasedOnStorage();
+        DevSettings.reload();
+      }
+      this.setState({ loading: false });
+    }
+  };
+
   render() {
-    const { monthData, selectedDay, currentMonth, events, monthEvents } = this.state;
+    const { monthData, selectedDay, currentMonth, events, monthEvents, currentIndex } = this.state;
     if (monthData.length === 0) {
       return null;
     }
@@ -179,6 +211,11 @@ export default class MonthScreen extends React.Component {
       <View style={styles.container}>
         <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
         <ScrollView contentContainerStyle={styles.scrollContentStyle}>
+          {!isPaidVersion() && (
+            <TouchableOpacity style={styles.purchaseWrapper} onPress={this.onPressUnlock}>
+              <Text style={styles.purchaseText}>Unlock additional calendar features</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={[
               styles.headerContainer,
@@ -205,9 +242,11 @@ export default class MonthScreen extends React.Component {
             <TouchableOpacity style={styles.arrowButton} onPress={this.gotoPreviousMonth}>
               <Text>◀︎</Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity style={styles.arrowButton} onPress={this.gotoCurrentMonth}>
-                <Text>Today</Text>
-              </TouchableOpacity> */}
+            {!isPaidVersion() && currentIndex === monthList.length - 1 && (
+              <TouchableOpacity style={styles.arrowButton} onPress={this.onPressUnlock}>
+                <Text style={{ color: Colors.main }}>To View other years, please upgrade</Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity style={styles.arrowButton} onPress={this.gotoNextMonth}>
               <Text>▶︎</Text>
             </TouchableOpacity>
@@ -306,7 +345,8 @@ export default class MonthScreen extends React.Component {
                       </View>
                     );
                   })}
-                  {events.length === 0 && <Text style={styles.noEventText}>No events</Text>}
+                  {events.length === 0 && isPaidVersion() && <Text style={styles.noEventText}>No events</Text>}
+                  {!isPaidVersion() && <Text style={[styles.noEventText, { color: Colors.main }]}>To sync or view events, please upgrade</Text>}
                 </View>
               )}
               {!selectedDay && (
@@ -344,12 +384,14 @@ export default class MonthScreen extends React.Component {
                       </View>
                     );
                   })}
-                  {monthEvents.length === 0 && <Text style={styles.noEventText}>No events</Text>}
+                  {monthEvents.length === 0 && isPaidVersion() && <Text style={styles.noEventText}>No events</Text>}
+                  {!isPaidVersion() && <Text style={[styles.noEventText, { color: Colors.main }]}>To sync or view events, please upgrade</Text>}
                 </View>
               )}
             </View>
           </View>
         </ScrollView>
+        <LoadingView visible={this.state.loading} />
       </View>
     );
   }
@@ -585,5 +627,19 @@ const styles = StyleSheet.create({
   },
   holyTitle: {
     color: Colors.white,
+  },
+  purchaseWrapper: {
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: Colors.main,
+    margin: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  purchaseText: {
+    fontSize: 18,
+    color: Colors.main,
+    fontWeight: 'bold',
+    paddingVertical: 20,
   },
 });

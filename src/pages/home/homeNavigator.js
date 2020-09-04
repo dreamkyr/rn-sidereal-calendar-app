@@ -10,6 +10,7 @@ import AlertScreen from './alert';
 import HelpScreen from './help';
 import HolyDetailScreen from './holyDetail';
 import { SidemenuButton, SidemenuAdd } from '@app/components';
+import PrintedCalendarDetailScreen from './printedCalendarDetail';
 
 const Stack = createStackNavigator();
 
@@ -20,7 +21,7 @@ export default function HomeNavigator({ navigation }) {
         name="Main"
         component={MainScreen}
         options={{
-          title: 'Kemetic Sidereal Calendar - Year 420',
+          title: 'Kemetic Sidereal Calendar',
           headerLeft: () => <SidemenuButton navigation={navigation} />,
           headerTitleStyle: {
             fontSize: 14,
@@ -57,6 +58,11 @@ export default function HomeNavigator({ navigation }) {
       <Stack.Screen name="Alert" component={AlertScreen} options={{ headerBackTitleVisible: false, headerTintColor: 'white' }} />
       <Stack.Screen name="Help" component={HelpScreen} options={{ headerBackTitleVisible: false, headerTintColor: 'white' }} />
       <Stack.Screen name="HolyDetail" component={HolyDetailScreen} options={{ headerBackTitleVisible: false, headerTintColor: 'white' }} />
+      <Stack.Screen
+        name="PrintedCalendarDetail"
+        component={PrintedCalendarDetailScreen}
+        options={{ title: 'Printed Calendar', headerBackTitleVisible: false, headerTintColor: 'white' }}
+      />
     </Stack.Navigator>
   );
 }

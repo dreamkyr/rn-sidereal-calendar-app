@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
-import { View, Image, StyleSheet, StatusBar } from 'react-native';
-import { Colors, SCREEN_WIDTH } from '@app/helper';
+import { View, Image, StyleSheet, StatusBar, Dimensions } from 'react-native';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function HomeScreen({ navigation }) {
   return (
@@ -20,14 +21,14 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     height: '100%',
-    backgroundColor: Colors.background,
+    backgroundColor: '#FEF6D6',
     justifyContent: 'center',
     alignItems: 'center',
   },
   logoContainer: {
     width: SCREEN_WIDTH - 40,
     height: SCREEN_WIDTH - 40,
-    backgroundColor: Colors.white,
+    backgroundColor: 'white',
     borderRadius: SCREEN_WIDTH,
     justifyContent: 'center',
     alignItems: 'center',

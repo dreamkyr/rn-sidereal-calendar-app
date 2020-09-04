@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, View, Image, StyleSheet, TouchableOpacity, Text, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors, SCREEN_WIDTH, DONATE_URL, JOIN_URL, ABOUT_URL } from '@app/helper';
+import { Colors, SCREEN_WIDTH, DONATE_URL, JOIN_URL, ABOUT_URL, isPaidVersion, SUBSCRIBE_URL, RESOURCE_URL, BUY_P_CALENDAR_URL } from '@app/helper';
 
 export const SideMenu = ({ navigation }) => (
   <View style={styles.container}>
@@ -11,7 +11,7 @@ export const SideMenu = ({ navigation }) => (
           <Image resizeMode="contain" style={styles.logo} source={require('@app/assets/images/logo.png')} />
         </View>
         <TouchableOpacity style={styles.viewContainer} onPress={() => navigation.navigate('Main')}>
-          <Text style={styles.titleText}>View</Text>
+          <Text style={styles.titleText}>{!isPaidVersion() ? 'Free Version' : 'Paid Version'}</Text>
         </TouchableOpacity>
         {/* <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Week')}>
           <Image source={require('@app/assets/images/sidemenu_weekly.png')} />
@@ -60,12 +60,43 @@ export const SideMenu = ({ navigation }) => (
           <Text style={styles.menuText}>Settings</Text>
         </TouchableOpacity> */}
         <TouchableOpacity
+          style={[styles.menuItem, styles.noIconMenuItem]}
+          onPress={() => {
+            navigation.closeDrawer();
+            Linking.openURL(SUBSCRIBE_URL);
+          }}>
+          <Text style={styles.noIconText}>Subscribe (horoscopes & e-magazine)</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.menuItem, styles.noIconMenuItem]}
+          onPress={() => {
+            navigation.closeDrawer();
+            Linking.openURL(RESOURCE_URL);
+          }}>
+          <Text style={styles.noIconText}>Resources (spiritual tools)</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
           style={styles.viewContainer}
           onPress={() => {
             navigation.closeDrawer();
             Linking.openURL(ABOUT_URL);
           }}>
           <Text style={styles.titleText}>About The Earth Center</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.viewContainer}
+          onPress={() => {
+            navigation.navigate('PrintedCalendarDetail');
+          }}>
+          <Text style={styles.titleText}>About The Printed Calendar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.viewContainer}
+          onPress={() => {
+            navigation.closeDrawer();
+            Linking.openURL(BUY_P_CALENDAR_URL);
+          }}>
+          <Text style={styles.titleText}>Buy Printed Calendar</Text>
         </TouchableOpacity>
       </SafeAreaView>
     </ScrollView>
@@ -115,5 +146,17 @@ const styles = StyleSheet.create({
   menuText: {
     marginLeft: 20,
     fontSize: 16,
+  },
+  noIconText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: Colors.main,
+  },
+  noIconMenuItem: {
+    borderWidth: 2,
+    borderRadius: 2,
+    borderColor: Colors.main,
+    paddingHorizontal: 10,
+    width: 'auto',
   },
 });

@@ -9,6 +9,7 @@ export const Colors = {
   lightpink: '#7E2B2E3A',
   red: 'red',
   event: '#63B8BD',
+  modalBackground: '#3333339A',
 };
 
 export const MONTH_COLORS = {
