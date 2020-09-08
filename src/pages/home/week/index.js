@@ -165,7 +165,7 @@ export default class WeekScreen extends React.Component {
                   return (
                     <View key={event.id} style={[styles.eventItemContainer, styles.eventNoBorder]}>
                       <Text style={styles.eventTime}>
-                        {moment(event.startDate).format('HH:mm')} - {moment(event.endDate).format('HH:mm')}
+                        {moment(event.startDate).format('hh:mm')} - {moment(event.endDate).format('hh:mm A')}
                       </Text>
                       <Text style={styles.eventTitle}>{event.title}</Text>
                     </View>

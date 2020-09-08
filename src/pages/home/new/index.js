@@ -131,7 +131,7 @@ export default class AddEvent extends React.Component {
               onPress={() => this.setState({ showStartPicker: !showStartPicker, showEndPicker: false })}>
               <Text style={styles.labelText}>Starts</Text>
               <Text style={styles.labelText}>{moment(startDate).format('DD / MMM')}</Text>
-              {!allDay && <Text style={styles.labelText}>{moment(startDate).format('HH:mm A')}</Text>}
+              {!allDay && <Text style={styles.labelText}>{moment(startDate).format('hh:mm A')}</Text>}
             </TouchableOpacity>
             {!allDay && showStartPicker && (
               <DateTimePicker
@@ -147,7 +147,7 @@ export default class AddEvent extends React.Component {
               style={[styles.eventRow, styles.extraPadding]}
               onPress={() => this.setState({ showEndPicker: !showEndPicker, showStartPicker: false })}>
               <Text style={styles.labelText}>Ends</Text>
-              {!allDay && <Text style={styles.labelText}>{moment(endDate).format('HH:mm A')}</Text>}
+              {!allDay && <Text style={styles.labelText}>{moment(endDate).format('hh:mm A')}</Text>}
             </TouchableOpacity>
             {!allDay && showEndPicker && (
               <DateTimePicker

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image, ScrollView, Alert, FlatList, DevSettings } from 'react-native';
 import RNCalendarEvents from 'react-native-calendar-events';
 import moment from 'moment';
@@ -201,6 +201,31 @@ export default class MonthScreen extends React.Component {
     }
   };
 
+  onDeleteEvent = (event) => {
+    if (event && event.id && event.calendar && !event.calendar.allowsModifications) {
+      Alert.alert("Sorry, you can't delete this event.");
+      return;
+    }
+    Alert.alert('Confirm', 'Are you sure to delete this event?', [
+      {
+        text: 'Delete',
+        onPress: () => {
+          RNCalendarEvents.removeEvent(event.id)
+            .then((res) => {
+              this.setState({
+                monthEvents: this.state.monthEvents.filter((item) => item.id !== event.id),
+                events: this.state.events.filter((item) => item.id !== event.id),
+              });
+            })
+            .catch((error) => {
+              console.log('error = ', error);
+            });
+        },
+      },
+      { text: 'Cancel' },
+    ]);
+  };
+
   render() {
     const { monthData, selectedDay, currentMonth, events, monthEvents, currentIndex } = this.state;
     if (monthData.length === 0) {
@@ -213,7 +238,7 @@ export default class MonthScreen extends React.Component {
         <ScrollView contentContainerStyle={styles.scrollContentStyle}>
           {!isPaidVersion() && (
             <TouchableOpacity style={styles.purchaseWrapper} onPress={this.onPressUnlock}>
-              <Text style={styles.purchaseText}>Unlock additional calendar features</Text>
+              <Text style={styles.purchaseText}>Upgrade for Calendar Syncing Integration, Future Years and Additional Explainations</Text>
             </TouchableOpacity>
           )}
           <TouchableOpacity
@@ -231,6 +256,7 @@ export default class MonthScreen extends React.Component {
               </Text>
             </View>
             <Image style={styles.monthImage} resizeMode="contain" source={MONTH_NAMES[monthData[0].s_month]} />
+            <Text style={[styles.plusMark, { color: MONTH_COLORS[monthData[0].s_year] }]}>+</Text>
           </TouchableOpacity>
           <View style={[styles.headerContainer, { borderBottomColor: MONTH_COLORS[monthData[0].s_year] }]}>
             <Text style={[styles.dateText, { color: MONTH_COLORS[monthData[0].s_year] }]}>
@@ -268,7 +294,7 @@ export default class MonthScreen extends React.Component {
               style={styles.monthCardContainer}
               pagingEnabled
               showsHorizontalScrollIndicator={false}
-              data={monthList}
+              data={monthList.filter((item) => item.s_year === currentMonth.s_year)}
               renderItem={this.renderMonth}
               keyExtractor={(item, index) => index.toString()}
               viewabilityConfig={this.viewabilityConfig}
@@ -291,15 +317,27 @@ export default class MonthScreen extends React.Component {
                 <View style={styles.detailTextContainer}>
                   <View style={styles.holyWrapper}>
                     {sDayObject && !!sDayObject.holy_year && (
-                      <TouchableOpacity style={styles.holyTitleWrapper} onPress={() => this.gotoHolyDetailView(sDayObject.holy_year)}>
-                        <Text style={[styles.detailTitleText, styles.holyTitle]}>{sDayObject.holy_year || ''}</Text>
-                      </TouchableOpacity>
+                      <Fragment>
+                        <TouchableOpacity style={styles.holyTitleWrapper} onPress={() => this.gotoHolyDetailView(sDayObject.holy_year)}>
+                          <Text style={[styles.detailTitleText, styles.holyTitle]}>{sDayObject.holy_year || ''}</Text>
+                        </TouchableOpacity>
+                        {!(sDayObject && !!sDayObject.holy_week) && (
+                          <TouchableOpacity onPress={() => this.gotoHolyDetailView(sDayObject.holy_year)}>
+                            <Text style={[styles.plusMark, styles.holyPlusMark]}>+</Text>
+                          </TouchableOpacity>
+                        )}
+                      </Fragment>
                     )}
                     {sDayObject && !!sDayObject.holy_week && !!sDayObject.holy_year && <Text style={styles.detailTitleText}> </Text>}
                     {sDayObject && !!sDayObject.holy_week && (
-                      <TouchableOpacity style={styles.holyTitleWrapper} onPress={() => this.gotoHolyDetailView(sDayObject.holy_week)}>
-                        <Text style={[styles.detailTitleText, styles.holyTitle]}>{sDayObject.holy_week || ''}</Text>
-                      </TouchableOpacity>
+                      <Fragment>
+                        <TouchableOpacity style={styles.holyTitleWrapper} onPress={() => this.gotoHolyDetailView(sDayObject.holy_week)}>
+                          <Text style={[styles.detailTitleText, styles.holyTitle]}>{sDayObject.holy_week || ''}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.gotoHolyDetailView(sDayObject.holy_week)}>
+                          <Text style={[styles.plusMark, styles.holyPlusMark]}>+</Text>
+                        </TouchableOpacity>
+                      </Fragment>
                     )}
                   </View>
                   <Text>Dekan week: {sDayObject.dekan_day}</Text>
@@ -326,23 +364,26 @@ export default class MonthScreen extends React.Component {
                   {events.map((event) => {
                     if (event.allDay) {
                       return (
-                        <View key={event.id} style={styles.eventItemContainer}>
+                        <TouchableOpacity onPress={() => this.onDeleteEvent(event)} key={event.id} style={styles.eventItemContainer}>
                           <View style={styles.eventTimeWrapper}>
                             <Text style={styles.eventTime}>All-day</Text>
                           </View>
                           <Text style={styles.eventTitle}>{event.title}</Text>
-                        </View>
+                        </TouchableOpacity>
                       );
                     }
                     return (
-                      <View key={event.id} style={[styles.eventItemContainer, styles.eventNoBorder]}>
+                      <TouchableOpacity
+                        onPress={() => this.onDeleteEvent(event)}
+                        key={event.id}
+                        style={[styles.eventItemContainer, styles.eventNoBorder]}>
                         <View style={styles.eventTimeWrapper}>
                           <Text style={styles.eventTime}>
-                            {moment(event.startDate).format('HH:mm A')} - {moment(event.endDate).format('HH:mm A')}
+                            {moment(event.startDate).format('hh:mm A')} - {moment(event.endDate).format('hh:mm A')}
                           </Text>
                         </View>
                         <Text style={styles.eventTitle}>{event.title}</Text>
-                      </View>
+                      </TouchableOpacity>
                     );
                   })}
                   {events.length === 0 && isPaidVersion() && <Text style={styles.noEventText}>No events</Text>}
@@ -359,7 +400,10 @@ export default class MonthScreen extends React.Component {
                     );
                     if (event.allDay) {
                       return (
-                        <View key={event.id} style={[styles.eventItemContainer, styles.eventNoBorder]}>
+                        <TouchableOpacity
+                          key={event.id}
+                          onPress={() => this.onDeleteEvent(event)}
+                          style={[styles.eventItemContainer, styles.eventNoBorder]}>
                           <View style={styles.eventTimeWrapper}>
                             <Text style={styles.eventTime}>{`All-day ${moment(event.startDate).format('MMM D')}`}</Text>
                             <Text style={[styles.eventTime, styles.eventSDayTime]}>
@@ -367,21 +411,24 @@ export default class MonthScreen extends React.Component {
                             </Text>
                           </View>
                           <Text style={styles.eventTitle}>{event.title}</Text>
-                        </View>
+                        </TouchableOpacity>
                       );
                     }
                     return (
-                      <View key={event.id} style={[styles.eventItemContainer, styles.eventNoBorder]}>
+                      <TouchableOpacity
+                        key={event.id}
+                        onPress={() => this.onDeleteEvent(event)}
+                        style={[styles.eventItemContainer, styles.eventNoBorder]}>
                         <View style={styles.eventTimeWrapper}>
                           <Text style={styles.eventTime}>
-                            {moment(event.startDate).format('HH:mm A')} - {moment(event.endDate).format('HH:mm A MMMM D')}
+                            {moment(event.startDate).format('hh:mm A')} - {moment(event.endDate).format('hh:mm A MMMM D')}
                           </Text>
                           <Text style={[styles.eventTime, styles.eventSDayTime]}>
                             {sDayFromGday.s_month} {sDayFromGday.s_day}
                           </Text>
                         </View>
                         <Text style={styles.eventTitle}>{event.title.trim()}</Text>
-                      </View>
+                      </TouchableOpacity>
                     );
                   })}
                   {monthEvents.length === 0 && isPaidVersion() && <Text style={styles.noEventText}>No events</Text>}
@@ -437,7 +484,7 @@ const styles = StyleSheet.create({
   },
   monthImage: {
     height: 50,
-    width: '40%',
+    width: '30%',
   },
   dateText: {
     fontSize: 15,
@@ -629,17 +676,31 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   purchaseWrapper: {
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: Colors.main,
-    margin: 4,
+    borderRadius: 16,
+    backgroundColor: Colors.main,
+    margin: 16,
+    marginBottom: 0,
+    paddingHorizontal: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   purchaseText: {
-    fontSize: 18,
-    color: Colors.main,
+    fontSize: 24,
+    lineHeight: 36,
+    color: Colors.white,
     fontWeight: 'bold',
-    paddingVertical: 20,
+    paddingVertical: 16,
+    textAlign: 'center',
+  },
+  plusMark: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: Colors.green,
+    paddingHorizontal: '5%',
+  },
+  holyPlusMark: {
+    paddingHorizontal: '1%',
+    fontSize: 30,
+    marginBottom: 5,
   },
 });

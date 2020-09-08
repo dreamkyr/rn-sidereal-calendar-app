@@ -32,6 +32,11 @@ export default class MonthScreen extends React.Component {
       <View style={styles.container}>
         <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
         <ScrollView contentContainerStyle={styles.scrollContentStyle}>
+          {!isPaidVersion() && (
+            <TouchableOpacity style={styles.purchaseWrapper} onPress={this.onPressUnlock}>
+              <Text style={styles.purchaseText}>Upgrade for Calendar Syncing Integration, Future Years and Additional Explainations</Text>
+            </TouchableOpacity>
+          )}
           {HELP_CONTENT.map((item, index) => (
             <View key={index} style={styles.sectionWrapper}>
               {item.section && <Text style={styles.sectionTitle}>{item.section}</Text>}
@@ -114,5 +119,22 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontWeight: 'bold',
     fontSize: 20,
+  },
+  purchaseWrapper: {
+    borderRadius: 16,
+    backgroundColor: Colors.main,
+    margin: 16,
+    marginTop: 0,
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  purchaseText: {
+    fontSize: 24,
+    lineHeight: 36,
+    color: Colors.white,
+    fontWeight: 'bold',
+    paddingVertical: 16,
+    textAlign: 'center',
   },
 });

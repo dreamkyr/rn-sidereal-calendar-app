@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, StatusBar, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, ScrollView, TouchableOpacity, Linking } from 'react-native';
 
-import { Colors } from '@app/helper';
+import { Colors, BUY_P_CALENDAR_URL } from '@app/helper';
 import { PRINTED_CALENDAR_DETAIL } from '@app/helper/data';
 export default class PrintedCalendarDetailScreen extends React.Component {
   constructor() {
@@ -19,6 +19,13 @@ export default class PrintedCalendarDetailScreen extends React.Component {
               {item.content && <Text style={styles.sectionContent}>{item.content}</Text>}
             </View>
           ))}
+          <TouchableOpacity
+            style={styles.viewContainer}
+            onPress={() => {
+              Linking.openURL(BUY_P_CALENDAR_URL);
+            }}>
+            <Text style={styles.buyText}>Buy Printed Calendar</Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );
@@ -41,5 +48,11 @@ const styles = StyleSheet.create({
   },
   sectionContent: {
     marginBottom: 10,
+  },
+  buyText: {
+    width: '100%',
+    textAlign: 'center',
+    paddingVertical: 20,
+    color: 'blue',
   },
 });

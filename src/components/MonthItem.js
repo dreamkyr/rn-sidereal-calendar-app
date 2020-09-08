@@ -12,10 +12,10 @@ export const MonthItem = ({ selectedDay, onSelectDay, currentMonth, monthEvents 
     if (!year || !month || !day) {
       return false;
     }
-    const mEvents = monthEvents.map((item) => moment(item.startDate).dayOfYear());
-    if (mEvents.includes(moment(`${month}/${day}/${year}`, 'MMMM/D/YYYY').dayOfYear())) {
-      return true;
-    }
+    // const mEvents = monthEvents.map((item) => moment(item.startDate).dayOfYear());
+    // if (mEvents.includes(moment(`${month}/${day}/${year}`, 'MMMM/D/YYYY').dayOfYear())) {
+    //   return true;
+    // }
     if (sDayObject.holy_week || sDayObject.holy_year) {
       return true;
     }
@@ -30,7 +30,7 @@ export const MonthItem = ({ selectedDay, onSelectDay, currentMonth, monthEvents 
       return 'Multi Events';
     }
     if (sDay.holy_week) {
-      return sDay.holy_week;
+      return sDay.holy_week.trim();
     }
     if (sDay.holy_year) {
       return 'Holy Year Day';

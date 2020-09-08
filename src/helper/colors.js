@@ -20,9 +20,9 @@ export const MONTH_COLORS = {
 };
 
 export const HOLY_COLOR = {
-  'Day of Rest': '#7E2B2E3A',
-  'Ancestral Holy Day': '#C16436',
-  'Divine Holy Day': '#63B8BD',
-  'Holy Year Day': '#63B8BD',
-  'Multi Events': '#63B8BD',
+  'Day of Rest': '#84B4BA',
+  'Ancestral Holy Day': '#84B4BA',
+  'Holy Year Day': '#84B4BA',
+  'Multi Events': '#396261',
+  'Divine Holy Day': '#396261',
 };

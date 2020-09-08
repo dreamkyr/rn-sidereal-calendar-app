@@ -38,6 +38,13 @@ export default class HomeScreen extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { route } = this.props;
+    if (prevProps.route !== route && route && route.params && route.params.isUpdateAction) {
+      this.onPressUnlock();
+    }
+  }
+
   static navigationOptions = ({ navigation }) => {
     const { state } = navigation;
     return {
@@ -117,7 +124,7 @@ export default class HomeScreen extends React.Component {
         <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
         {!isPaidVersion() && (
           <TouchableOpacity style={styles.purchaseWrapper} onPress={this.onPressUnlock}>
-            <Text style={styles.purchaseText}>Unlock additional calendar features</Text>
+            <Text style={styles.purchaseText}>Upgrade for Calendar Syncing Integration, Future Years and Additional Explainations</Text>
           </TouchableOpacity>
         )}
         <FlatList
@@ -141,7 +148,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   listContentStyle: {
-    paddingBottom: 80,
+    paddingBottom: 200,
     // paddingHorizontal: 10,
   },
   itemContainer: {
@@ -190,17 +197,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   purchaseWrapper: {
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: Colors.main,
-    margin: 4,
+    borderRadius: 16,
+    backgroundColor: Colors.main,
+    margin: 16,
+    marginBottom: 0,
+    paddingHorizontal: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   purchaseText: {
-    fontSize: 18,
-    color: Colors.main,
+    fontSize: 24,
+    lineHeight: 36,
+    color: Colors.white,
     fontWeight: 'bold',
-    paddingVertical: 20,
+    paddingVertical: 16,
+    textAlign: 'center',
   },
 });
