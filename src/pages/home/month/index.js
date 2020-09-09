@@ -299,7 +299,7 @@ export default class MonthScreen extends React.Component {
               keyExtractor={(item, index) => index.toString()}
               viewabilityConfig={this.viewabilityConfig}
               getItemLayout={(data, index) => ({ length: SCREEN_WIDTH - 10, offset: (SCREEN_WIDTH - 10) * index, index })}
-              initialScrollIndex={monthList.findIndex((item) => item.key === currentMonth.key)}
+              initialScrollIndex={monthList.findIndex((item) => item.key === currentMonth.key) % 13}
               onViewableItemsChanged={this.handleViewableItemsChanged}
             />
           </View>
@@ -582,7 +582,7 @@ const styles = StyleSheet.create({
     flex: 0.2,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 97,
+    height: 106,
   },
   detailImage: {
     height: 30,

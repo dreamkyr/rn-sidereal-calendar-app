@@ -26,9 +26,6 @@ export const MonthItem = ({ selectedDay, onSelectDay, currentMonth, monthEvents 
 
   const getHolidayColor = (index) => {
     const sDay = getSDay(index);
-    if (sDay.holy_week && sDay.holy_year && hasEvent(index)) {
-      return 'Multi Events';
-    }
     if (sDay.holy_week) {
       return sDay.holy_week.trim();
     }

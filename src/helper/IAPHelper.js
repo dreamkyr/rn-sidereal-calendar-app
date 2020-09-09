@@ -33,5 +33,6 @@ export const requestPurchase = async () => {
     return await RNIap.requestPurchase('com.sidereal.calendar.paid', false);
   } catch (err) {
     console.log('error = ', err);
+    Alert.alert(err.message);
   }
 };

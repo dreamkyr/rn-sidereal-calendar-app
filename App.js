@@ -11,7 +11,15 @@ import 'react-native-gesture-handler';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import * as RNIap from 'react-native-iap';
 import SplashScreen from '@app/pages/splash';
-import { Colors, IAP_SKUS, syncPurchasedFromStorage, syncShownPaidWelcome, removePurchasedFromStorage, removeShownPaidWelcome } from '@app/helper';
+import {
+  Colors,
+  IAP_SKUS,
+  syncPurchasedFromStorage,
+  syncShownPaidWelcome,
+  removePurchasedFromStorage,
+  removeShownPaidWelcome,
+  savePurchasedOnStorage,
+} from '@app/helper';
 
 const Theme = {
   ...DefaultTheme,
@@ -34,9 +42,11 @@ class App extends React.Component {
     try {
       // await removePurchasedFromStorage();
       // await removeShownPaidWelcome();
+      // await savePurchasedOnStorage();
       await RNIap.clearTransactionIOS();
-      await RNIap.initConnection();
-      await RNIap.getProducts(IAP_SKUS);
+      console.log(await RNIap.initConnection());
+      console.log(await RNIap.getProducts(IAP_SKUS));
+      console.log(await RNIap.getSubscriptions(IAP_SKUS));
       await syncPurchasedFromStorage();
       await syncShownPaidWelcome();
       setTimeout(() => {
