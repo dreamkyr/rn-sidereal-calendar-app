@@ -77,7 +77,7 @@ export const SideMenu = ({ navigation }) => {
             <Image style={styles.menuImage} source={require('@app/assets/images/sidemenu/help.png')} />
             <Text style={styles.menuText}>About</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.menuItem}
             onPress={() => {
               navigation.closeDrawer();
@@ -85,7 +85,7 @@ export const SideMenu = ({ navigation }) => {
             }}>
             <Image style={styles.menuImage} source={require('@app/assets/images/sidemenu/donate.png')} />
             <Text style={styles.menuText}>Donate</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={styles.menuItem}
             onPress={() => {
