@@ -11,6 +11,7 @@ import {
   requestPurchase,
   savePurchasedOnStorage,
   saveShownPaidWelcome,
+  getRestorePayment,
 } from '@app/helper';
 import { getSMonthList, SMONTH_DATA } from '@app/helper/data';
 import { FlatList } from 'react-native-gesture-handler';
@@ -42,6 +43,9 @@ export default class HomeScreen extends React.Component {
     const { route } = this.props;
     if (prevProps.route !== route && route && route.params && route.params.isUpdateAction) {
       this.onPressUnlock();
+    }
+    if (prevProps.route !== route && route && route.params && route.params.isRestoreAction) {
+      this.onPressRestore();
     }
   }
 
@@ -101,6 +105,16 @@ export default class HomeScreen extends React.Component {
       }
       this.setState({ loading: false });
     }
+  };
+
+  onPressRestore = async () => {
+    this.setState({ loading: true });
+    const result = await getRestorePayment();
+    if (result) {
+      await savePurchasedOnStorage();
+      DevSettings.reload();
+    }
+    this.setState({ loading: false });
   };
 
   closeWelcome = async () => {

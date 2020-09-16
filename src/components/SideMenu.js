@@ -1,11 +1,14 @@
 import React from 'react';
-import { ScrollView, View, Image, StyleSheet, TouchableOpacity, Text, Linking } from 'react-native';
+import { ScrollView, View, Image, StyleSheet, TouchableOpacity, Text, Linking, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors, SCREEN_WIDTH, DONATE_URL, JOIN_URL, ABOUT_URL, isPaidVersion, SUBSCRIBE_URL, RESOURCE_URL, BUY_P_CALENDAR_URL } from '@app/helper';
 
 export const SideMenu = ({ navigation }) => {
   const onPressUnlock = () => {
     navigation.navigate('Main', { isUpdateAction: true });
+  };
+  const onPressRestore = () => {
+    navigation.navigate('Main', { isRestoreAction: true });
   };
   return (
     <View style={styles.container}>
@@ -17,11 +20,18 @@ export const SideMenu = ({ navigation }) => {
           <TouchableOpacity style={[styles.viewContainer, { width: 'auto' }]} onPress={() => navigation.navigate('Main')}>
             <Text style={[styles.titleText, styles.versionText]}>{!isPaidVersion() ? 'Free Version' : 'Paid Version'}</Text>
           </TouchableOpacity>
-          {!isPaidVersion() && (
-            <TouchableOpacity style={styles.upgradeWrapper} onPress={onPressUnlock}>
-              <Text style={styles.upgradeText}>Upgrade</Text>
-            </TouchableOpacity>
-          )}
+          <View style={styles.paymentWrapper}>
+            {!isPaidVersion() && (
+              <TouchableOpacity style={styles.upgradeWrapper} onPress={onPressUnlock}>
+                <Text style={styles.upgradeText}>Upgrade</Text>
+              </TouchableOpacity>
+            )}
+            {!isPaidVersion() && Platform.OS === 'ios' && (
+              <TouchableOpacity style={styles.upgradeWrapper} onPress={onPressRestore}>
+                <Text style={styles.upgradeText}>Restore</Text>
+              </TouchableOpacity>
+            )}
+          </View>
           {/* <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Week')}>
           <Image source={require('@app/assets/images/sidemenu_weekly.png')} />
           <Text style={styles.menuText}>Dekan (Weekly)</Text>
@@ -182,6 +192,12 @@ const styles = StyleSheet.create({
     borderColor: Colors.main,
     paddingHorizontal: 10,
     width: 'auto',
+  },
+  paymentWrapper: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
   upgradeWrapper: {
     backgroundColor: Colors.main,

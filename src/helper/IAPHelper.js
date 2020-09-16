@@ -29,10 +29,16 @@ export const showUpgradeDialog = async (message = defaultPurchaseMessage, title 
 
 export const requestPurchase = async () => {
   try {
-    console.log('====== purchase start request =========');
     return await RNIap.requestPurchase('com.sidereal.calendar.paid', false);
   } catch (err) {
-    console.log('error = ', err);
+    Alert.alert(err.message);
+  }
+};
+
+export const getRestorePayment = async () => {
+  try {
+    return await RNIap.getAvailablePurchases();
+  } catch (err) {
     Alert.alert(err.message);
   }
 };
